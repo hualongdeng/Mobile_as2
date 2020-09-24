@@ -14,12 +14,18 @@
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.mobiledemo.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_monitor"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.mobiledemo.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_todo"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_medal"
+        android:name="com.example.mobiledemo.ui.medal.MedalFragment"
+        android:label="@string/title_medal"
+        tools:layout="@layout/fragment_medal" />
 </navigation>

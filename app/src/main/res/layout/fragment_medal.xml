@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.medal.MedalFragment">
 
     <Button
-        android:id="@+id/account"
+        android:id="@+id/medal_daily"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -15,14 +15,27 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="300dp"
         android:enabled="true"
-        android:text="@string/action_account"
+        android:text="@string/action_medal_daily"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2" />
 
     <Button
-        android:id="@+id/setting"
+        android:id="@+id/medal_weekly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="10dp"
+        android:enabled="true"
+        android:text="@string/action_medal_weekly"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <Button
+        android:id="@+id/medal_monthly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -30,14 +43,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
         android:enabled="true"
-        android:text="@string/action_setting"
+        android:text="@string/action_medal_monthly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2" />
 
     <TextView
-        android:id="@+id/text_home"
+        android:id="@+id/text_medal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
