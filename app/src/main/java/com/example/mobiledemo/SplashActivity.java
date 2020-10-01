@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.example.mobiledemo.ui.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
-    private final int SPLASH_DISPLAY_LENGHT = 2200; // 两秒后进入系统
+    private final int SPLASH_DISPLAY_LENGHT = 2020; // 2.02 second
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
