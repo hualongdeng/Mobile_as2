@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Add new">
+        <EditTextPreference
+            android:key="title"
+            android:title="Title"
+            android:defaultValue="666"/>
+        <EditTextPreference
+            android:key="start"
+            android:title="Start"
+            android:defaultValue="666"/>
+        <EditTextPreference
+            android:key="end"
+            android:title="End"
+            android:defaultValue="666"/>
+        <EditTextPreference
+            android:key="place"
+            android:title="Place"
+            android:defaultValue="666"/>
+        <EditTextPreference
+            android:key="remind"
+            android:title="Remind me"
+            android:defaultValue="666"/>
+        <EditTextPreference
+            android:key="repeat"
+            android:title="Repeat"
+            android:defaultValue="666"/>
+        <Preference android:title="Save" android:key="todo_save_new"/>
+    </PreferenceCategory>
+</PreferenceScreen>

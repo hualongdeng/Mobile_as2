@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Monitor Setting">
+        <Preference android:title="Application list" android:key="setting_application"/>
+        <SwitchPreference
+            android:key="switch_preference"
+            android:title="Surrounding volume monitor"/>
+        <SwitchPreference
+            android:key="switch_preference"
+            android:title="GPS monitor"/>
+    </PreferenceCategory>
+</PreferenceScreen>

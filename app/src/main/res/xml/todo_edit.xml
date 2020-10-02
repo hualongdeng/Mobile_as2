@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Important events">
+        <CheckBoxPreference
+            android:key="volume1"
+            android:title="Meeting1" />
+        <CheckBoxPreference
+            android:key="volume2"
+            android:title="Meeting2" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Tasks">
+        <CheckBoxPreference
+        android:key="volume3"
+        android:title="Task1" />
+        <CheckBoxPreference
+            android:key="volume4"
+            android:title="Task2" />
+        <Preference android:title="Add new" android:key="todo_add_new"/>
+    </PreferenceCategory>
+</PreferenceScreen>
