@@ -11,6 +11,7 @@ import androidx.preference.Preference;
 
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.report.ReportActivity;
 
 public class MonitorSettingActivity extends AppCompatActivity {
 
@@ -24,5 +25,13 @@ public class MonitorSettingActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.monitor_settings_container, new MonitorSettingFragment())
                 .commit();
+        final Button backButton = findViewById(R.id.monitor_setting_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MonitorSettingActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

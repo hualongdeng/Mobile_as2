@@ -2,12 +2,15 @@ package com.example.mobiledemo.ui.setting;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.account.AccountActivity;
 import com.example.mobiledemo.ui.report.ReportActivity;
 
 public class MonitorSettingFragment extends PreferenceFragmentCompat {
