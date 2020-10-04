@@ -202,7 +202,7 @@
         android:layout_height="116dp"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/touxiang"
+        android:src="@drawable/profileexample"
         app:layout_constraintBottom_toTopOf="@+id/username2"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         tools:srcCompat="@tools:sample/avatars" />
