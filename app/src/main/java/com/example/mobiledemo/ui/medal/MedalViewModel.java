@@ -10,7 +10,8 @@ public class MedalViewModel extends ViewModel {
 
     public MedalViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is medal fragment");
+        mText.setValue("My Medal");
+
     }
 
     public LiveData<String> getText() {

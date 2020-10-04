@@ -27,6 +27,10 @@
     <string name="action_medal_daily">Daily</string>
     <string name="action_medal_weekly">Weekly</string>
     <string name="action_medal_monthly">Monthly</string>
+    <string name="action_medal_type1">type1</string>
+    <string name="action_medal_type1_1">type1</string>
+    <string name="action_medal_type2">type2</string>
+    <string name="action_medal_type2_1">type1</string>
 
     <string name="welcome">"Welcome ! "</string>
     <string name="invalid_username">Not a valid username</string>
