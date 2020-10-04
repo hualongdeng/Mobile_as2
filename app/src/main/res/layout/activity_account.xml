@@ -56,7 +56,7 @@
         app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/editText1"
+        app:layout_constraintStart_toEndOf="@+id/birthday"
         app:layout_constraintTop_toBottomOf="@+id/username"
         app:layout_constraintVertical_bias="0.085" />
 
@@ -75,7 +75,7 @@
         app:layout_constraintVertical_bias="0.251" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/birthday"
         android:layout_width="133dp"
         android:layout_height="42dp"
         android:layout_marginStart="28dp"
@@ -84,6 +84,8 @@
         android:gravity="left"
         android:hint="1900-00-00"
         android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
         app:layout_constraintTop_toBottomOf="@+id/username"
         tools:ignore="MissingConstraints" />
@@ -207,17 +209,6 @@
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
-        android:layout_alignRight="@+id/button1"
-        android:layout_marginTop="72dp"
-        android:text="@string/date_selected"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="MissingConstraints" />
-
     <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="149dp"
@@ -228,7 +219,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.168"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone6"
-        app:layout_constraintTop_toBottomOf="@+id/editText1"
+        app:layout_constraintTop_toBottomOf="@+id/birthday"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
