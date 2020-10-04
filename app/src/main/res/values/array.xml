@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="repeat_option">
+        <item>Everyday</item>
+        <item>Everyweek</item>
+    </string-array>
+    <string-array name="repeat_option_value">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="remind_option">
+        <item>10 Minutes</item>
+        <item>30 Minutes</item>
+    </string-array>
+    <string-array name="remind_option_value">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

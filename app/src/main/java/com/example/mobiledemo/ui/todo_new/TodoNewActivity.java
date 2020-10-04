@@ -1,11 +1,17 @@
 package com.example.mobiledemo.ui.todo_new;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.setting.MonitorSettingActivity;
+import com.example.mobiledemo.ui.todo.TodoEditActivity;
 
 public class TodoNewActivity extends AppCompatActivity {
 
@@ -19,5 +25,13 @@ public class TodoNewActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.todo_new_container, new TodoNewFragment())
                 .commit();
+        final Button backButton = findViewById(R.id.todo_new_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TodoNewActivity.this, TodoEditActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -3,21 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="Important events">
-        <CheckBoxPreference
-            android:key="volume1"
-            android:title="Meeting1" />
-        <CheckBoxPreference
-            android:key="volume2"
-            android:title="Meeting2" />
+        <Preference android:title="Event1" android:key="todo_event1"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Tasks">
-        <CheckBoxPreference
-        android:key="volume3"
-        android:title="Task1" />
-        <CheckBoxPreference
-            android:key="volume4"
-            android:title="Task2" />
+        <Preference android:title="Task1" android:key="todo_task1"/>
         <Preference android:title="Add new" android:key="todo_add_new"/>
     </PreferenceCategory>
 </PreferenceScreen>

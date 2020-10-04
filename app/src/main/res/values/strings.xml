@@ -58,4 +58,8 @@
         <item>Others</item>
         <item>Prefer not to say</item>
     </string-array>
+    <string name="home_hi">"Hi, XXX"</string>
+    <string name="home_today">"Today:"</string>
+    <string name="home_hour">"You have efficiently studied for X hours !"</string>
+    <string name="home_todo">"Your todo list:"</string>
 </resources>

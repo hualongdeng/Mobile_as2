@@ -7,26 +7,26 @@
             android:key="title"
             android:title="Title"
             android:defaultValue="666"/>
-        <EditTextPreference
-            android:key="start"
-            android:title="Start"
-            android:defaultValue="666"/>
-        <EditTextPreference
-            android:key="end"
-            android:title="End"
-            android:defaultValue="666"/>
+        <Preference android:title="Start" android:key="todo_new_start"/>
+        <Preference android:title="End" android:key="todo_new_end"/>
         <EditTextPreference
             android:key="place"
             android:title="Place"
             android:defaultValue="666"/>
-        <EditTextPreference
+        <ListPreference
             android:key="remind"
             android:title="Remind me"
-            android:defaultValue="666"/>
-        <EditTextPreference
+            android:entries="@array/remind_option"
+            android:entryValues="@array/remind_option_value"
+            android:dialogTitle="Remind me">
+        </ListPreference>
+        <ListPreference
             android:key="repeat"
             android:title="Repeat"
-            android:defaultValue="666"/>
+            android:entries="@array/repeat_option"
+            android:entryValues="@array/repeat_option_value"
+            android:dialogTitle="Repeat">
+        </ListPreference>
         <Preference android:title="Save" android:key="todo_save_new"/>
     </PreferenceCategory>
 </PreferenceScreen>

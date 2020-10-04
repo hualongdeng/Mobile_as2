@@ -2,6 +2,8 @@ package com.example.mobiledemo;
 
 import android.os.Bundle;
 
+import com.example.mobiledemo.ui.home.HomeTodoFragment;
+import com.example.mobiledemo.ui.todo_new.TodoNewFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.text_home_container, new HomeTodoFragment())
+                .commit();
     }
 
 }
