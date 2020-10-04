@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.account.AccountActivity">
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/account_back"
@@ -18,35 +17,219 @@
         android:text="@string/action_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/account_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="70dp"
         android:enabled="true"
         android:text="@string/action_password_change"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/account_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="300dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="10dp"
         android:enabled="true"
         android:text="@string/action_logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/account_birthday"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="12dp"
+        android:enabled="true"
+        android:text="@string/action_birthday_change"
+        app:layout_constraintBottom_toTopOf="@+id/account_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/editText1"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:layout_constraintVertical_bias="0.085" />
+
+    <Button
+        android:id="@+id/account_birthday2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="12dp"
+        android:enabled="true"
+        android:text="@string/action_photo_change"
+        app:layout_constraintBottom_toTopOf="@+id/account_password"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.251" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="133dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:gravity="left"
+        android:hint="1900-00-00"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/editTextPhone"
+        android:layout_width="111dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="29dp"
+        android:ems="10"
+        android:text="Nickname: "
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
+
+    <TextView
+        android:id="@+id/editTextPhone4"
+        android:layout_width="71dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:singleLine="false"
+        android:text="Phone: "
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+
+    <TextView
+        android:id="@+id/editTextPhone6"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:text="Gender:"
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone5" />
+
+    <TextView
+        android:id="@+id/editTextPhone2"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:text="Location:"
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone6" />
+
+    <TextView
+        android:id="@+id/editTextPhone5"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:text="Birthday:"
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone4" />
+
+    <TextView
+        android:id="@+id/editTextPhone3"
+        android:layout_width="100dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="90dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:text="Profile photo "
+        android:textSize="40px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_back" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="253dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:hint="0400000000"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username2" />
+
+    <EditText
+        android:id="@+id/username2"
+        android:layout_width="253dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_nickname"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="113dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/touxiang"
+        app:layout_constraintBottom_toTopOf="@+id/username2"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username"
+        android:layout_alignRight="@+id/button1"
+        android:layout_marginTop="72dp"
+        android:text="@string/date_selected"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:ignore="MissingConstraints" />
+
+    <Spinner
+        android:id="@+id/spinner_gender"
+        android:layout_width="149dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:entries="@array/genders_array"
+        app:layout_constraintBottom_toTopOf="@+id/account_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.168"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone6"
+        app:layout_constraintTop_toBottomOf="@+id/editText1"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
