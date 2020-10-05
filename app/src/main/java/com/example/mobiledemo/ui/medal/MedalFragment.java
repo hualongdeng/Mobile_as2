@@ -32,7 +32,7 @@ public class MedalFragment extends Fragment {
         medalViewModel =
                 ViewModelProviders.of(this).get(MedalViewModel.class);
         View root = inflater.inflate(R.layout.fragment_medal, container, false);
-        final TextView textView = root.findViewById(R.id.text_medal);
+        final TextView textView = root.findViewById(R.id.medal_page_title);
         medalViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
