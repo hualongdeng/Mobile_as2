@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/account_back"
@@ -25,12 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="70dp"
         android:enabled="true"
         android:text="@string/action_password_change"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -46,34 +45,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/account_birthday"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_gravity="start"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="12dp"
-        android:enabled="true"
-        android:text="@string/action_birthday_change"
-        app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/birthday"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        app:layout_constraintVertical_bias="0.085" />
-
-    <Button
         android:id="@+id/account_birthday2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="2dp"
         android:layout_marginBottom="12dp"
         android:enabled="true"
         android:text="@string/action_photo_change"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.277" />
+        app:layout_constraintVertical_bias="0.251" />
 
     <EditText
         android:id="@+id/birthday"
@@ -81,12 +64,12 @@
         android:layout_height="42dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="30dp"
-        android:clickable="true"
         android:ems="10"
-        android:focusable="false"
         android:gravity="left"
         android:hint="1900-00-00"
         android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
         app:layout_constraintTop_toBottomOf="@+id/username"
         tools:ignore="MissingConstraints" />
@@ -176,7 +159,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:hint="0400000000"
-        android:inputType="textEmailAddress"
+        android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -201,13 +184,14 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="114dp"
-        android:layout_height="98dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/avatar_icon_1"
+        android:layout_width="113dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/profileexample"
         app:layout_constraintBottom_toTopOf="@+id/username2"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone3" />
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <Spinner
         android:id="@+id/spinner_gender"
