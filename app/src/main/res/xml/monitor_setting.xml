@@ -2,7 +2,7 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="Monitor Setting">
+        >
         <Preference android:title="Application list" android:key="setting_application"/>
         <SwitchPreference
             android:key="switch_preference"
