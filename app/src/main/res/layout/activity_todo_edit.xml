@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.todo.TodoEditActivity">
+    tools:context=".ui.todo.TodoEditActivity"
+    android:background="@drawable/background">
     <Button
         android:id="@+id/todo_edit_back"
         android:layout_width="wrap_content"
