@@ -47,6 +47,18 @@
         <activity
             android:name=".ui.todo_new.TodoNewActivity"
             android:label="@string/title_activity_report"></activity>
+        <activity
+            android:name=".ui.type1.Type1Activity"
+            android:label="@string/title_activity_report"></activity>
+        <activity
+            android:name=".ui.type1_1.Type1_1Activity"
+            android:label="@string/title_activity_report"></activity>
+        <activity
+            android:name=".ui.type2.Type2Activity"
+            android:label="@string/title_activity_report"></activity>
+        <activity
+            android:name=".ui.type2_1.Type2_1Activity"
+            android:label="@string/title_activity_report"></activity>
     </application>
 
 </manifest>

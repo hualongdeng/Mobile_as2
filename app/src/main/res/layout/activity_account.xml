@@ -45,22 +45,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/account_birthday"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_gravity="start"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="12dp"
-        android:enabled="true"
-        android:text="@string/action_birthday_change"
-        app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/editText1"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        app:layout_constraintVertical_bias="0.085" />
-
-    <Button
         android:id="@+id/account_birthday2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +59,7 @@
         app:layout_constraintVertical_bias="0.251" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/birthday"
         android:layout_width="133dp"
         android:layout_height="42dp"
         android:layout_marginStart="28dp"
@@ -84,6 +68,8 @@
         android:gravity="left"
         android:hint="1900-00-00"
         android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
         app:layout_constraintTop_toBottomOf="@+id/username"
         tools:ignore="MissingConstraints" />
@@ -173,7 +159,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:hint="0400000000"
-        android:inputType="textEmailAddress"
+        android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -207,17 +193,6 @@
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
-        android:layout_alignRight="@+id/button1"
-        android:layout_marginTop="72dp"
-        android:text="@string/date_selected"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="MissingConstraints" />
-
     <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="149dp"
@@ -228,7 +203,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.168"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone6"
-        app:layout_constraintTop_toBottomOf="@+id/editText1"
+        app:layout_constraintTop_toBottomOf="@+id/birthday"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
