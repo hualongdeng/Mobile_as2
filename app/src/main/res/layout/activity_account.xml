@@ -192,7 +192,7 @@
         android:src="@drawable/avatar_icon_1"
         app:layout_constraintBottom_toTopOf="@+id/username2"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
-        >
+        />
 
     <Spinner
         android:id="@+id/spinner_gender"

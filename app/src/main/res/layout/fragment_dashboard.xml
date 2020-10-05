@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.dashboard.DashboardFragment"
+    android:background="@drawable/home_backgroud_part1">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -15,9 +16,11 @@
             android:id="@+id/chronometer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
             android:gravity="center"
             android:textColor="#85C1E9"
-            android:textSize="60dip" />
+            android:textSize="60dip"
+            app:layout_constraintTop_toBottomOf="parent"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
