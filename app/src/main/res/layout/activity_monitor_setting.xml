@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setting.MonitorSettingActivity">
+    tools:context=".ui.setting.MonitorSettingActivity"
+    android:background="@drawable/background">
 
     <Button
         android:id="@+id/monitor_setting_back"
