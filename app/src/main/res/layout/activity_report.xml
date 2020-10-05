@@ -9,14 +9,13 @@
 
     <Button
         android:id="@+id/report_back"
-        android:layout_width="47dp"
+        android:layout_width="41dp"
         android:layout_height="41dp"
         android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="300dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="30dp"
         android:background="@drawable/report_back_button"
         android:enabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
