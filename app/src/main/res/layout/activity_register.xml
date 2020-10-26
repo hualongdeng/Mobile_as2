@@ -91,13 +91,13 @@
 
     <Button
         android:id="@+id/register_register"
-        android:layout_width="350dp"
-        android:layout_height="35dp"
+        android:layout_width="361dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginStart="48dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="48dp"
-        android:background="@drawable/register__submit"
+        android:background="@drawable/register_submit"
         android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -106,8 +106,8 @@
 
     <Button
         android:id="@+id/register_cancel"
-        android:layout_width="350dp"
-        android:layout_height="35dp"
+        android:layout_width="361dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginStart="48dp"
         android:layout_marginTop="10dp"
