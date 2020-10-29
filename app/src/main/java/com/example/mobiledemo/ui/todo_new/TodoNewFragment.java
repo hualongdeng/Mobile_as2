@@ -1,7 +1,6 @@
 package com.example.mobiledemo.ui.todo_new;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -26,10 +25,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
-import com.example.mobiledemo.ui.report.ReportActivity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,6 +134,8 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         @Override
                         public void onResponse(String response) {
                             Log.d("TAG", response);
+                            Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                            startActivity(intent);
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -145,8 +144,6 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         }
                     });
                     mQueue.add(deleteRequest);
-                    Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                    startActivity(intent);
                     return true;
                 }
             });
@@ -166,6 +163,8 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                             @Override
                             public void onResponse(String response) {
                                 Log.d("TAG", response);
+                                Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                                startActivity(intent);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -198,8 +197,6 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                             }
                         };
                     mQueue.add(stringRequest);
-                    Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                    startActivity(intent);
                     return true;
                 }
             });

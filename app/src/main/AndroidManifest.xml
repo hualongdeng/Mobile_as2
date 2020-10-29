@@ -61,6 +61,9 @@
         <activity
             android:name=".ui.type2_1.Type2_1Activity"
             android:label="@string/title_activity_report"></activity>
+        <activity
+            android:name=".ui.setting.ApplicationActivity"
+            android:label="ApplicationActivity"></activity>
     </application>
 
 </manifest>
