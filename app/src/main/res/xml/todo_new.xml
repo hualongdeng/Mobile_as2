@@ -4,29 +4,30 @@
     <PreferenceCategory
         >
         <EditTextPreference
-            android:key="title"
+            android:key="todo_new_title"
             android:title="Title"
-            android:defaultValue="666"/>
+            android:defaultValue="Click to edit"/>
         <Preference android:title="Start" android:key="todo_new_start"/>
         <Preference android:title="End" android:key="todo_new_end"/>
         <EditTextPreference
-            android:key="place"
+            android:key="todo_new_place"
             android:title="Place"
-            android:defaultValue="666"/>
+            android:defaultValue="Click to edit"/>
         <ListPreference
-            android:key="remind"
+            android:key="todo_new_remind"
             android:title="Remind me"
             android:entries="@array/remind_option"
             android:entryValues="@array/remind_option_value"
             android:dialogTitle="Remind me">
         </ListPreference>
         <ListPreference
-            android:key="repeat"
+            android:key="todo_new_repeat"
             android:title="Repeat"
             android:entries="@array/repeat_option"
             android:entryValues="@array/repeat_option_value"
             android:dialogTitle="Repeat">
         </ListPreference>
         <Preference android:title="Save" android:key="todo_save_new"/>
+        <Preference android:title="Delete" android:key="todo_delete"/>
     </PreferenceCategory>
 </PreferenceScreen>

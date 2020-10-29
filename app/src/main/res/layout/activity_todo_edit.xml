@@ -33,10 +33,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/todo_edit_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="85dp"
-        app:layout_constraintTop_toBottomOf="@+id/todo_edit_back" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/my_recycler_view_todo_edit"
+        android:layout_gravity="start"
+        android:layout_width="352dp"
+        android:layout_height="450dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_page_title"
+        app:layout_constraintVertical_bias="0.136"/>
+
+    <Button
+        android:id="@+id/todo_add_new"
+        android:layout_width="352dp"
+        android:layout_height="45dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="80dp"
+        android:enabled="true"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_recycler_view_todo_edit"
+        app:layout_constraintVertical_bias="0.0" />
+<!--    <FrameLayout-->
+<!--        android:id="@+id/todo_edit_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginTop="85dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/todo_edit_back" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,5 @@
     <PreferenceCategory
         android:title="Tasks">
         <Preference android:title="Task1" android:key="todo_task1"/>
-        <Preference android:title="Add new" android:key="todo_add_new"/>
     </PreferenceCategory>
 </PreferenceScreen>

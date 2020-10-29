@@ -7,11 +7,17 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.setting.MonitorSettingActivity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
+
+import java.util.List;
 
 public class TodoNewActivity extends AppCompatActivity {
 
@@ -25,6 +31,7 @@ public class TodoNewActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.todo_new_container, new TodoNewFragment())
                 .commit();
+
         final Button backButton = findViewById(R.id.todo_new_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
