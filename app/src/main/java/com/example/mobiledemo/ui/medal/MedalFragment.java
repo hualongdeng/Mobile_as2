@@ -51,6 +51,7 @@ public class MedalFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ReportActivity.class);
+                intent.putExtra("type", "day");
                 startActivity(intent);
             }
         });
@@ -58,6 +59,7 @@ public class MedalFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ReportActivity.class);
+                intent.putExtra("type", "week");
                 startActivity(intent);
             }
         });
@@ -65,6 +67,7 @@ public class MedalFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ReportActivity.class);
+                intent.putExtra("type", "month");
                 startActivity(intent);
             }
         });
