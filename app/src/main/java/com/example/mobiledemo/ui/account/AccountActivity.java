@@ -3,12 +3,10 @@ package com.example.mobiledemo.ui.account;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -31,6 +29,7 @@ public class AccountActivity extends AppCompatActivity {
         final Button backButton = findViewById(R.id.account_back);
         final Button passwordButton = findViewById(R.id.account_password);
         final Button logoutButton = findViewById(R.id.account_logout);
+        final Button uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +63,14 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AccountActivity.this, PasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountActivity.this, ProfilePhotoActivity.class);
                 startActivity(intent);
             }
         });

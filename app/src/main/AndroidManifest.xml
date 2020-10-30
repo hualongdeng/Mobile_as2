@@ -36,6 +36,9 @@
             android:name=".ui.password.PasswordActivity"
             android:label="@string/title_activity_password"></activity>
         <activity
+            android:name=".ui.account.ProfilePhotoActivity"
+            android:label="ProfilePhotoActivity"></activity>
+        <activity
             android:name=".ui.report.ReportActivity"
             android:label="@string/title_activity_report"></activity>
         <activity
