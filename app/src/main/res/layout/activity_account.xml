@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
-
     <TextView
         android:id="@+id/account_page_title"
         android:layout_width="wrap_content"
@@ -35,42 +34,44 @@
 
     <Button
         android:id="@+id/account_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="361dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
-        android:layout_marginBottom="56dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/account_changepassword_big"
         android:enabled="true"
-        android:text="@string/action_password_change"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:foreground="@drawable/account_changepassword_big"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone2" />
 
     <Button
         android:id="@+id/account_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="361dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:background="@drawable/account_logout_big"
         android:enabled="true"
-        android:text="@string/action_logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toBottomOf="@+id/account_password" />
 
     <Button
-        android:id="@+id/account_upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/account_birthday2"
+        android:layout_width="105dp"
+        android:layout_height="43dp"
         android:layout_gravity="start"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="30dp"
         android:layout_marginBottom="12dp"
+        android:background="@drawable/account_upload_big"
         android:enabled="true"
-        android:text="@string/action_photo_change"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.277" />
+        app:layout_constraintVertical_bias="0.303" />
 
     <EditText
         android:id="@+id/birthday"
@@ -92,8 +93,8 @@
         android:id="@+id/editTextPhone"
         android:layout_width="111dp"
         android:layout_height="41dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="29dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:text="Nickname: "
         android:textSize="40px"
@@ -204,8 +205,7 @@
         android:layout_marginBottom="8dp"
         android:src="@drawable/avatar_icon_1"
         app:layout_constraintBottom_toTopOf="@+id/username2"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
-        />
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3" />
 
     <Spinner
         android:id="@+id/spinner_gender"
@@ -221,4 +221,3 @@
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

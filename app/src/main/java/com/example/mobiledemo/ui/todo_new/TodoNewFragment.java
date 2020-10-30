@@ -1,73 +1,285 @@
 package com.example.mobiledemo.ui.todo_new;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import androidx.annotation.RequiresApi;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.R;
-import com.example.mobiledemo.ui.report.ReportActivity;
+import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TodoNewFragment extends PreferenceFragmentCompat {
+    List<TodoEntity> todo;
+    EditTextPreference titleView, placeView;
+    Preference startTimeView, endTimeView;
+    ListPreference remindView, repeatView;
+    String title = "None";
+    String email = "";
+    String place = "None";
+    int id = 0;
+    int repeat = 0;
+    int remind = 0;
+    int start_year = 0;
+    int start_month = 0;
+    int start_day = 0;
+    int start_hour = 0;
+    int start_min = 0;
+    int end_year = 0;
+    int end_month = 0;
+    int end_day = 0;
+    int end_hour = 0;
+    int end_min = 0;
+    int new_or_not = 0;
+    String get_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo";
+    String update_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo_update";
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.todo_new, rootKey);
-        Preference monitor_button = findPreference("todo_save_new");
+        titleView = (EditTextPreference) findPreference("todo_new_title");
+        startTimeView = findPreference("todo_new_start");
+        endTimeView = findPreference("todo_new_end");
+        placeView = findPreference("todo_new_place");
+        remindView = (ListPreference) findPreference("todo_new_remind");
+        repeatView = (ListPreference) findPreference("todo_new_repeat");
+        titleView.setSummaryProvider(new Preference.SummaryProvider<EditTextPreference>() {
+            @Override
+            public CharSequence provideSummary(EditTextPreference preference) {
+                String text = titleView.getText();
+                return text;
+            }
+        });
+        placeView.setSummaryProvider(new Preference.SummaryProvider<EditTextPreference>() {
+            @Override
+            public CharSequence provideSummary(EditTextPreference preference) {
+                String text = placeView.getText();
+                return text;
+            }
+        });
+        try {
+            todo =  (List<TodoEntity>) getActivity().getIntent().getSerializableExtra("data");
+            id = todo.get(0).getId();
+            title = todo.get(0).getTitle();
+            email = todo.get(0).getEmail();
+            start_year = todo.get(0).getStartYear();
+            start_month = todo.get(0).getStartMonth();
+            start_day = todo.get(0).getStartDay();
+            start_hour = todo.get(0).getStartHour();
+            start_min = todo.get(0).getStartMin();
+            end_year = todo.get(0).getEndYear();
+            end_month = todo.get(0).getEndMonth();
+            end_day = todo.get(0).getEndDay();
+            end_hour = todo.get(0).getEndHour();
+            end_min = todo.get(0).getEndMin();
+            place = todo.get(0).getPlace();
+            repeat = todo.get(0).getRepeat();
+            remind = todo.get(0).getRemind();
+
+            titleView.setText(title);
+
+            startTimeView.setSummary(getTimeString(start_year, start_month, start_day, start_hour, start_min));
+            endTimeView.setSummary(getTimeString(end_year, end_month, end_day, end_hour, end_min));
+            placeView.setText(place);
+
+            CharSequence[] remind_entries=remindView.getEntries();
+            remindView.setValueIndex(remind);
+            remindView.setSummary(remind_entries[remind]);
+
+            CharSequence[] repeat_entries=repeatView.getEntries();
+            repeatView.setValueIndex(repeat);
+            repeatView.setSummary(repeat_entries[repeat]);
+
+        } catch (Exception e) {
+            email = getActivity().getIntent().getStringExtra("email");
+            new_or_not = 1;
+        }
+
+        Preference save_button = findPreference("todo_save_new");
         Preference start_button = findPreference("todo_new_start");
         Preference end_button = findPreference("todo_new_end");
-        if (monitor_button != null) {
-            monitor_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference delete_button = findPreference("todo_delete");
+        if (new_or_not == 1) {
+            delete_button.setVisible(false);
+        }
+        if (delete_button != null) {
+            delete_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                    startActivity(intent);
+                    RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+                    StringRequest deleteRequest = new StringRequest(Request.Method.GET, update_url + "?id=" + id, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("TAG", response);
+                            Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                            startActivity(intent);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("TAG", error.getMessage(), error);
+                        }
+                    });
+                    mQueue.add(deleteRequest);
+                    return true;
+                }
+            });
+        }
+        if (save_button != null) {
+            save_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference arg0) {
+                    RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+                    String url;
+                    if (new_or_not == 1) {
+                        url = get_url;
+                    } else {
+                        url = update_url;
+                    }
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d("TAG", response);
+                                Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                                startActivity(intent);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("TAG", error.getMessage(), error);
+                            }
+                        }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> map = new HashMap<String, String>();
+                                if (new_or_not == 1) {
+                                    map.put("title", titleView.getText());
+                                    map.put("email", email);
+                                    map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                                    map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                                    map.put("location", placeView.getText());
+                                    map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
+                                    map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
+                                } else {
+                                    map.put("id", String.valueOf(id));
+                                    map.put("title", titleView.getText());
+                                    map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                                    map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                                    map.put("location", placeView.getText());
+                                    map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
+                                    map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
+                                }
+
+                                return map;
+                            }
+                        };
+                    mQueue.add(stringRequest);
                     return true;
                 }
             });
         }
         if (start_button != null) {
             start_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                int new_start_year = 0;
+                int new_start_month = 0;
+                int new_start_day = 0;
+                int new_start_hour = 0;
+                int new_start_min = 0;
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                    builder2.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                    builder1.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            start_year = new_start_year;
+                            start_month = new_start_month + 1;
+                            start_day = new_start_day;
+                            start_hour = new_start_hour;
+                            start_min = new_start_min;
+                            startTimeView.setSummary(getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                            dialog.dismiss();
+                        }
+                    });
+                    builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-                    builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog dialog2 = builder2.create();
-                    View dialogView2 = View.inflate(getActivity(), R.layout.start_timepicker, null);
-                    TimePicker timePicker = (TimePicker) dialogView2.findViewById(R.id.start_timePicker);
+                    AlertDialog dialog1 = builder1.create();
+                    View dialogView1 = View.inflate(getActivity(), R.layout.start_timepicker, null);
+                    DatePicker datepicker = dialogView1.findViewById(R.id.datePicker);
+                    TimePicker timePicker = (TimePicker) dialogView1.findViewById(R.id.timePicker);
                     timePicker.setIs24HourView(true);
-                    dialog2.setTitle("Time setting");
-                    dialog2.setView(dialogView2);
-                    dialog2.show();
+                    if (new_or_not == 0) {
+                        timePicker.setHour(start_hour);
+                        timePicker.setMinute(start_min);
+                        datepicker.updateDate(start_year, start_month, start_day);
+                    }
+                    datepicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+                        @Override
+                        public void onDateChanged(DatePicker datePicker, int year, int month, int day) {
+                            new_start_year = year;
+                            new_start_month = month;
+                            new_start_day = day;
+                        }
+                    });
+                    timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                        @Override
+                        public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                            new_start_hour = hourOfDay;
+                            new_start_min = minute;
+                        }
+                    });
+                    dialog1.setTitle("Time setting");
+                    dialog1.setView(dialogView1);
+                    dialog1.show();
                     return true;
                 }
             });
         }
         if (end_button != null) {
             end_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                int new_end_year = 0;
+                int new_end_month = 0;
+                int new_end_day = 0;
+                int new_end_hour = 0;
+                int new_end_min = 0;
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
                     AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
                     builder2.setPositiveButton("Set", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            end_year = new_end_year;
+                            end_month = new_end_month + 1;
+                            end_day = new_end_day;
+                            end_hour = new_end_hour;
+                            end_min = new_end_min;
+                            endTimeView.setSummary(getTimeString(end_year, end_month, end_day, end_hour, end_min));
                             dialog.dismiss();
                         }
                     });
@@ -79,8 +291,29 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                     });
                     AlertDialog dialog2 = builder2.create();
                     View dialogView2 = View.inflate(getActivity(), R.layout.start_timepicker, null);
-                    TimePicker timePicker = (TimePicker) dialogView2.findViewById(R.id.start_timePicker);
+                    DatePicker datepicker = dialogView2.findViewById(R.id.datePicker);
+                    TimePicker timePicker = (TimePicker) dialogView2.findViewById(R.id.timePicker);
                     timePicker.setIs24HourView(true);
+                    if (new_or_not == 0) {
+                        timePicker.setHour(end_hour);
+                        timePicker.setMinute(end_min);
+                        datepicker.updateDate(end_year, end_month, end_day);
+                    }
+                    datepicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+                        @Override
+                        public void onDateChanged(DatePicker datePicker, int year, int month, int day) {
+                            new_end_year = year;
+                            new_end_month = month;
+                            new_end_day = day;
+                        }
+                    });
+                    timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                        @Override
+                        public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                            new_end_hour = hourOfDay;
+                            new_end_min = minute;
+                        }
+                    });
                     dialog2.setTitle("Time setting");
                     dialog2.setView(dialogView2);
                     dialog2.show();
@@ -88,5 +321,33 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                 }
             });
         }
+    }
+
+    public String getTimeString(int year, int month, int day, int hour, int min) {
+        String mon;
+        String day1;
+        String hour1;
+        String min1;
+        if (month < 9) {
+            mon = "0" + (month);
+        } else {
+            mon = String.valueOf(month);
+        }
+        if (day < 10) {
+            day1 = "0" + day;
+        } else {
+            day1 = String.valueOf(day);
+        }
+        if (hour < 10) {
+            hour1 = "0" + hour;
+        } else {
+            hour1 = String.valueOf(hour);
+        }
+        if (min < 10) {
+            min1 = "0" + min;
+        } else {
+            min1 = String.valueOf(min);
+        }
+        return year + "-" + mon + "-" + day1 + " " + hour1 + ":" + min1 + ":00";
     }
 }

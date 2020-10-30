@@ -10,8 +10,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.mobiledemo.R;
-import com.example.mobiledemo.ui.account.AccountActivity;
-import com.example.mobiledemo.ui.report.ReportActivity;
 
 public class MonitorSettingFragment extends PreferenceFragmentCompat {
     @Override
@@ -22,7 +20,7 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
             monitor_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    Intent intent = new Intent(getActivity(), ReportActivity.class);
+                    Intent intent = new Intent(getActivity(), ApplicationActivity.class);
                     startActivity(intent);
                     return true;
                 }

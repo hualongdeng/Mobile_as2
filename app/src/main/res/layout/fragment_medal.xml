@@ -37,14 +37,14 @@
 
     <Button
         android:id="@+id/medal_daily"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="109dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="292dp"
         android:enabled="true"
-        android:text="@string/action_medal_daily"
+        android:background="@drawable/medal_daily"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,12 +86,12 @@
 
     <Button
         android:id="@+id/medal_weekly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="109dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginTop="20dp"
         android:enabled="true"
-        android:text="@string/action_medal_weekly"
+        android:background="@drawable/medal_weekly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,13 +99,13 @@
 
     <Button
         android:id="@+id/medal_monthly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="109dp"
+        android:layout_height="45dp"
         android:layout_gravity="start"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="36dp"
         android:enabled="true"
-        android:text="@string/action_medal_monthly"
+        android:background="@drawable/medal_monthly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView" />
 
