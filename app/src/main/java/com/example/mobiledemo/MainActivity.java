@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.mobiledemo.ui.home.HomeTodoFragment;
 import com.example.mobiledemo.ui.todo_new.TodoNewFragment;
+import com.example.mobiledemo.utils.DbUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.text_home_container, new HomeTodoFragment())
                 .commit();
+        DbUtils.createDb(this, "TimeRecord");
     }
 
 }

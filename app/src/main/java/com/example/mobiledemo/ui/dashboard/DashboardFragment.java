@@ -18,11 +18,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.data.recordTime;
+import com.example.mobiledemo.utils.DbUtils;
+import com.example.mobiledemo.utils.TimeUtils;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, Chronometer.OnChronometerTickListener{
 
     private Chronometer chronometer;
     private Button btn_start,btn_stop,btn_base,btn_format;
+    private long lastPause;
+    private boolean start = false;
+    private boolean isRunning = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,19 +54,46 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnStart:
-                chronometer.start();
+                if (!isRunning) {
+                    if (!start) {
+                        start = true;
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                    } else {
+                        chronometer.setBase(chronometer.getBase() + SystemClock.elapsedRealtime() - lastPause);
+                    }
+                    chronometer.start();
+                    isRunning = true;
+                }
                 break;
             case R.id.btnStop:
-                chronometer.stop();
+                if (isRunning) {
+                    lastPause = SystemClock.elapsedRealtime();
+                    chronometer.stop();
+                    isRunning = false;
+                }
                 break;
             case R.id.btnReset:
-                chronometer.setBase(SystemClock.elapsedRealtime());
+                if (!isRunning) {
+                    recordTime record = new recordTime();
+                    record.setStartTime(TimeUtils.getCurrentLongTime());
+                    long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                    record.setTimeLength(elapsedMillis);
+                    DbUtils.insert(record);
+
+                    start = false;
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                }
                 break;
         }
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onChronometerTick(Chronometer chronometer) {
-        String time = chronometer.getText().toString();
+//        String time = chronometer.getText().toString();
     }
 }

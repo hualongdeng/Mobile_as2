@@ -18,6 +18,15 @@
         android:enabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/report_text"
+        android:layout_margin="20dp"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/report_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
