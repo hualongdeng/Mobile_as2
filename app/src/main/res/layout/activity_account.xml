@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/account_password" />
 
     <Button
-        android:id="@+id/account_birthday2"
+        android:id="@+id/account_upload"
         android:layout_width="105dp"
         android:layout_height="43dp"
         android:layout_gravity="start"
