@@ -36,9 +36,9 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
     EditTextPreference titleView, placeView;
     Preference startTimeView, endTimeView;
     ListPreference remindView, repeatView;
-    String title = "None";
+    String title = "Click to edit";
     String email = "";
-    String place = "None";
+    String place = "Click to edit";
     int id = 0;
     int repeat = 0;
     int remind = 0;
@@ -54,7 +54,7 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
     int end_min = 0;
     int new_or_not = 0;
     String get_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo";
-    String update_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo_update";
+    String update_url = "http://10.0.2.2:5000/todo_update";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -114,6 +114,8 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
             repeatView.setSummary(repeat_entries[repeat]);
 
         } catch (Exception e) {
+            title = "Click to edit";
+            place = "Click to edit";
             email = getActivity().getIntent().getStringExtra("email");
             new_or_not = 1;
         }
@@ -239,6 +241,11 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         timePicker.setMinute(start_min);
                         datepicker.updateDate(start_year, start_month, start_day);
                     }
+                    new_start_year = datepicker.getYear();
+                    new_start_month = datepicker.getMonth();
+                    new_start_day = datepicker.getDayOfMonth();
+                    new_start_hour = timePicker.getHour();
+                    new_start_min = timePicker.getMinute();
                     datepicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
                         @Override
                         public void onDateChanged(DatePicker datePicker, int year, int month, int day) {
@@ -299,6 +306,11 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         timePicker.setMinute(end_min);
                         datepicker.updateDate(end_year, end_month, end_day);
                     }
+                    new_end_year = datepicker.getYear();
+                    new_end_month = datepicker.getMonth();
+                    new_end_day = datepicker.getDayOfMonth();
+                    new_end_hour = timePicker.getHour();
+                    new_end_min = timePicker.getMinute();
                     datepicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
                         @Override
                         public void onDateChanged(DatePicker datePicker, int year, int month, int day) {

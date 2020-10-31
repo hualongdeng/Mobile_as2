@@ -11,7 +11,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
 import com.example.mobiledemo.R;
-import com.example.mobiledemo.ui.report.ReportActivity;
 
 import static android.content.Context.AUDIO_SERVICE;
 
