@@ -26,15 +26,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -70,29 +67,28 @@ public class NotificationsFragment extends Fragment {
         /*4,添加分割线，自定义分割线，分割线必须要自己定义，系统没有默认分割线*/
         mRecyclerView.addItemDecoration(new Decoration());
 
-        /*设置条目点击事件*/
-        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(View v, int position) {
-                Toast.makeText(getContext(), mDatas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog2 = builder2.create();
-                dialog2.setTitle("Do you want to cancel?");
-                dialog2.show();
-            }
-        });
+//        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+//            @Override
+//            public void OnItemClick(View v, int position) {
+//                Toast.makeText(getContext(), mDatas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+//                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+//                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                AlertDialog dialog2 = builder2.create();
+//                dialog2.setTitle("Do you want to cancel?");
+//                dialog2.show();
+//            }
+//        });
         todo_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,11 +124,6 @@ public class NotificationsFragment extends Fragment {
                                 int end_day = Integer.parseInt(end_time_draft[2]);
                                 int end_hour = Integer.parseInt(end_time_draft[3]);
                                 int end_minute = Integer.parseInt(end_time_draft[4]);
-                                Log.d("TAG", end_time_draft[0]);
-                                Log.d("TAG", end_time_draft[1]);
-                                Log.d("TAG", end_time_draft[2]);
-                                Log.d("TAG", end_time_draft[3]);
-                                Log.d("TAG", end_time_draft[4]);
                                 LocalDateTime start_time = LocalDateTime.of(start_year, start_mon, start_day, start_hour, start_minute);
                                 LocalDateTime end_time = LocalDateTime.of(end_year, end_mon, end_day, end_hour, end_minute);
                                 String title = response.getJSONObject(i).getString("title");
@@ -156,11 +147,5 @@ public class NotificationsFragment extends Fragment {
             }
         });
         mQueue.add(jsonArrayRequest);
-//        LocalDateTime start_time = LocalDateTime.of(2020, 10, 10, 10, 12);
-//        LocalDateTime end_time = LocalDateTime.of(2020, 10, 10, 20, 12);
-//        for(int i=0; i<10; i++){
-//            TodoEntity dataBean = new TodoEntity(1, start_time, end_time, "Meeting", "123@123.com", "Home",0, 0);
-//            mDatas.add(dataBean);
-//        }
     }
 }

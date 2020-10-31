@@ -81,6 +81,20 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                 return text;
             }
         });
+        remindView.setSummaryProvider(new Preference.SummaryProvider<ListPreference>() {
+            @Override
+            public CharSequence provideSummary(ListPreference preference) {
+                String text = String.valueOf(remindView.getEntries()[Integer.parseInt(remindView.getValue())]);
+                return text;
+            }
+        });
+        repeatView.setSummaryProvider(new Preference.SummaryProvider<ListPreference>() {
+            @Override
+            public CharSequence provideSummary(ListPreference preference) {
+                String text = String.valueOf(repeatView.getEntries()[Integer.parseInt(repeatView.getValue())]);
+                return text;
+            }
+        });
         try {
             todo =  (List<TodoEntity>) getActivity().getIntent().getSerializableExtra("data");
             id = todo.get(0).getId();
@@ -101,22 +115,17 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
             remind = todo.get(0).getRemind();
 
             titleView.setText(title);
-
             startTimeView.setSummary(getTimeString(start_year, start_month, start_day, start_hour, start_min));
             endTimeView.setSummary(getTimeString(end_year, end_month, end_day, end_hour, end_min));
             placeView.setText(place);
-
-            CharSequence[] remind_entries=remindView.getEntries();
             remindView.setValueIndex(remind);
-            remindView.setSummary(remind_entries[remind]);
-
-            CharSequence[] repeat_entries=repeatView.getEntries();
             repeatView.setValueIndex(repeat);
-            repeatView.setSummary(repeat_entries[repeat]);
 
         } catch (Exception e) {
-            title = "Click to edit";
-            place = "Click to edit";
+            titleView.setText("Click to edit");
+            placeView.setText("Click to edit");
+            remindView.setValueIndex(0);
+            repeatView.setValueIndex(0);
             email = getActivity().getIntent().getStringExtra("email");
             new_or_not = 1;
         }
