@@ -12,8 +12,5 @@
         <SwitchPreference
             android:key="switch_preference"
             android:title="Vibrate"/>
-        <SwitchPreference
-            android:key="switch_preference"
-            android:title="Night Model"/>
     </PreferenceCategory>
 </PreferenceScreen>
