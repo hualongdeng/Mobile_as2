@@ -54,7 +54,8 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
     int end_min = 0;
     int new_or_not = 0;
     String get_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo";
-    String update_url = "http://10.0.2.2:5000/todo_update";
+//    String update_url = "http://10.0.2.2:5000/todo_update";
+    String update_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo_update";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
