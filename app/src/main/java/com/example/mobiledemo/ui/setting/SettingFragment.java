@@ -32,10 +32,8 @@ public class SettingFragment extends PreferenceFragmentCompat {
             });
         }
         am = (AudioManager)getActivity().getSystemService(AUDIO_SERVICE);
-//获取系统最大音量
         int maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM );
         volume_bar.setMax(maxVolume);
-//获取当前音量
         int currentVolume = am.getStreamVolume(AudioManager.STREAM_SYSTEM);
         Log.i("init", String.valueOf(currentVolume));
         volume_bar.setValue(currentVolume);

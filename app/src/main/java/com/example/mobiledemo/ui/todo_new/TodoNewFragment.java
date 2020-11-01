@@ -27,6 +27,7 @@ import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,18 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
             remindView.setValueIndex(0);
             repeatView.setValueIndex(0);
             email = getActivity().getIntent().getStringExtra("email");
+            Calendar calendar = Calendar.getInstance();
+            start_year = calendar.get(Calendar.YEAR);
+            start_month = calendar.get(Calendar.MONTH)+1;
+            start_day = calendar.get(Calendar.DAY_OF_MONTH);
+            start_hour = calendar.get(Calendar.HOUR_OF_DAY);
+            start_min = calendar.get(Calendar.MINUTE);
+            end_year = calendar.get(Calendar.YEAR);
+            end_month = calendar.get(Calendar.MONTH)+1;
+            end_day = calendar.get(Calendar.DAY_OF_MONTH);
+            end_hour = calendar.get(Calendar.HOUR_OF_DAY);
+            end_min = calendar.get(Calendar.MINUTE);
+
             new_or_not = 1;
         }
 

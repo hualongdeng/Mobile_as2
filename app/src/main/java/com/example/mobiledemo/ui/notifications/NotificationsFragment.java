@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ import org.json.JSONException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,10 @@ public class NotificationsFragment extends Fragment {
     public View root;
     private MyAdapter mAdapter;
     private List<TodoEntity> mDatas;
+    String start_date;
     String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
+//    String url = "http://10.0.2.2:5000/";
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,13 +64,33 @@ public class NotificationsFragment extends Fragment {
         /*1,设置管理器*/
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         /*2,设置适配器*/
-        initListData();
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH)+1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        start_date = "&start_time=" + year+"-"+month+"-"+day;
+        initListData(start_date);
+        CalendarView myCalendar = (CalendarView) root.findViewById(R.id.calendarview);
+        CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener(){
+            public void onSelectedDayChange(CalendarView view, int year, int month, int day){
+                month = month + 1;
+                start_date = "&start_time=" + year+"-"+month+"-"+day;
+                Log.d("NEW_DATE", start_date);
+                initListData(start_date);
+                mAdapter = new MyAdapter(mDatas);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+        myCalendar.setOnDateChangeListener(myCalendarListener);
         mAdapter = new MyAdapter(mDatas);
         mRecyclerView.setAdapter(mAdapter);
         /*3,添加item的添加和移除动画, 这里我们使用系统默认的动画*/
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         /*4,添加分割线，自定义分割线，分割线必须要自己定义，系统没有默认分割线*/
         mRecyclerView.addItemDecoration(new Decoration());
+
+
 
 //        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
 //            @Override
@@ -93,6 +118,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                intent.putExtra("date", start_date);
                 startActivity(intent);
             }
         });
@@ -101,11 +127,11 @@ public class NotificationsFragment extends Fragment {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initListData() {
+    private void initListData(String start_date) {
 //        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com" + start_date, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

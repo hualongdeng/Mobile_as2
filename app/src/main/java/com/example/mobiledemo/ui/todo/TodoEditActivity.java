@@ -60,10 +60,11 @@ public class TodoEditActivity extends AppCompatActivity {
         final Button backButton = findViewById(R.id.todo_edit_back);
         final Button addNewButton = findViewById(R.id.todo_add_new);
 
+        String start_date = getIntent().getStringExtra("date");
         /*1,设置管理器*/
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         /*2,设置适配器*/
-        initListData();
+        initListData(start_date);
         mAdapter = new MyAdapter(mDatas);
         mRecyclerView.setAdapter(mAdapter);
         /*3,添加item的添加和移除动画, 这里我们使用系统默认的动画*/
@@ -118,11 +119,11 @@ public class TodoEditActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initListData() {
+    private void initListData(String start_date) {
 //        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com" + start_date, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -141,11 +142,6 @@ public class TodoEditActivity extends AppCompatActivity {
                                 int end_day = Integer.parseInt(end_time_draft[2]);
                                 int end_hour = Integer.parseInt(end_time_draft[3]);
                                 int end_minute = Integer.parseInt(end_time_draft[4]);
-                                Log.d("TAG", end_time_draft[0]);
-                                Log.d("TAG", end_time_draft[1]);
-                                Log.d("TAG", end_time_draft[2]);
-                                Log.d("TAG", end_time_draft[3]);
-                                Log.d("TAG", end_time_draft[4]);
                                 LocalDateTime start_time = LocalDateTime.of(start_year, start_mon, start_day, start_hour, start_minute);
                                 LocalDateTime end_time = LocalDateTime.of(end_year, end_mon, end_day, end_hour, end_minute);
                                 String title = response.getJSONObject(i).getString("title");
@@ -169,11 +165,5 @@ public class TodoEditActivity extends AppCompatActivity {
             }
         });
         mQueue.add(jsonArrayRequest);
-//        LocalDateTime start_time = LocalDateTime.of(2020, 10, 10, 10, 12);
-//        LocalDateTime end_time = LocalDateTime.of(2020, 10, 10, 20, 12);
-//        for(int i=0; i<10; i++){
-//            TodoEntity dataBean = new TodoEntity(1, start_time, end_time, "Meeting", "123@123.com", "Home",0, 0);
-//            mDatas.add(dataBean);
-//        }
     }
 }
