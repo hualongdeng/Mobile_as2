@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.example.mobiledemo.ui.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
-    private final int SPLASH_DISPLAY_LENGHT = 1980; // 1.98 second
+    private final int SPLASH_DISPLAY_LENGHT = 1970; // 1.97 second
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
