@@ -22,7 +22,7 @@
 
     <FrameLayout
         android:id="@+id/settings_container"
-        android:layout_width="320dp"
+        android:layout_width="0dp"
         android:layout_height="500dp"
         android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
