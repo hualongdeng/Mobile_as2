@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         >
-        <Preference android:title="Application list" android:key="setting_application"/>
+        <Preference
+            android:title="Application list"
+            android:key="setting_application"/>
         <SwitchPreference
             android:key="switch_preference"
             android:title="Surrounding volume monitor"/>
