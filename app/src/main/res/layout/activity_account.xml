@@ -9,7 +9,7 @@
         android:id="@+id/account_page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="13dp"
         android:text="Account"
         android:textColor="#E6D5D6CA"
         android:textSize="30sp"
@@ -24,7 +24,7 @@
         android:layout_width="47dp"
         android:layout_height="41dp"
         android:layout_gravity="start"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="13dp"
         android:layout_marginEnd="300dp"
         android:background="@drawable/back_button"
         android:enabled="true"
@@ -34,41 +34,45 @@
 
     <Button
         android:id="@+id/account_password"
-        android:layout_width="361dp"
-        android:layout_height="45dp"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginTop="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/account_changepassword_big"
         android:enabled="true"
         android:foreground="@drawable/account_changepassword_big"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone2" />
 
     <Button
         android:id="@+id/account_logout"
-        android:layout_width="361dp"
-        android:layout_height="45dp"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/account_logout_big"
         android:enabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toBottomOf="@+id/account_password" />
 
     <Button
         android:id="@+id/account_upload"
-        android:layout_width="105dp"
-        android:layout_height="43dp"
+        android:layout_width="95dp"
+        android:layout_height="35dp"
         android:layout_gravity="start"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/account_upload_big"
         android:enabled="true"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.303" />
@@ -77,27 +81,29 @@
         android:id="@+id/birthday"
         android:layout_width="133dp"
         android:layout_height="42dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="130dp"
         android:layout_marginTop="30dp"
+        android:clickable="true"
         android:ems="10"
-        android:gravity="left"
+        android:focusable="false"
+
         android:hint="1900-00-00"
         android:orientation="vertical"
-        android:clickable="true"
-        android:focusable="false"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <TextView
         android:id="@+id/editTextPhone"
         android:layout_width="111dp"
         android:layout_height="41dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:text="Nickname: "
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
 
@@ -111,6 +117,7 @@
         android:singleLine="false"
         android:text="Phone: "
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
 
@@ -124,6 +131,7 @@
         android:inputType="phone"
         android:text="Gender:"
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone5" />
 
@@ -137,6 +145,7 @@
         android:inputType="phone"
         android:text="Location:"
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone6" />
 
@@ -150,6 +159,7 @@
         android:inputType="phone"
         android:text="Birthday:"
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone4" />
 
@@ -163,38 +173,36 @@
         android:inputType="phone"
         android:text="Profile photo "
         android:textSize="40px"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_back" />
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="253dp"
+        android:layout_width="240dp"
         android:layout_height="49dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="24dp"
         android:hint="0400000000"
         android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone"
         app:layout_constraintTop_toBottomOf="@+id/username2" />
 
     <EditText
         android:id="@+id/username2"
-        android:layout_width="253dp"
+        android:layout_width="240dp"
         android:layout_height="49dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_nickname"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
 
     <ImageView
@@ -202,21 +210,24 @@
         android:layout_width="114dp"
         android:layout_height="98dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/avatar_icon_1"
         app:layout_constraintBottom_toTopOf="@+id/username2"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone3" />
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
+        app:layout_constraintEnd_toStartOf="@+id/account_upload"/>
 
     <Spinner
         android:id="@+id/spinner_gender"
-        android:layout_width="149dp"
-        android:layout_height="40dp"
+        android:layout_width="133dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="130dp"
         android:layout_marginTop="28dp"
         android:entries="@array/genders_array"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.168"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone6"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone"
         app:layout_constraintTop_toBottomOf="@+id/birthday"
         app:layout_constraintVertical_bias="0.0" />
 
