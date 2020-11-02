@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -19,21 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:textColor="@android:color/black" />
+            android:textColor="#4f5b4f"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/todo_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@android:color/black" />
+            android:textColor="#4f5b4f"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/todo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 
