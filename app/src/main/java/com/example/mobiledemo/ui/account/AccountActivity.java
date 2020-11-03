@@ -129,7 +129,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void takephoto(View View){
-        mimage = findViewById(R.id.imageView);
+        mimage = findViewById(R.id.myphoto);
         Intent imagetakeintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(imagetakeintent,REQUEST_CAPTURE);
     }

@@ -69,7 +69,7 @@
         android:background="@drawable/account_upload_big"
         android:enabled="true"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/myphoto"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.303" />
 
@@ -198,7 +198,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/myphoto"
         android:layout_width="114dp"
         android:layout_height="98dp"
         android:layout_marginStart="8dp"

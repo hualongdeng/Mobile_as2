@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageView"
+        android:id="@+id/myphoto"
         android:layout_width="80dp"
         android:layout_height="90dp"
         android:layout_marginStart="20dp"
@@ -50,7 +50,7 @@
         android:layout_height="90dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="50dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/myphoto"
         app:layout_constraintTop_toBottomOf="@+id/account_back"
         app:srcCompat="@drawable/avatar_icon_2" />
 
@@ -81,7 +81,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/myphoto"
         app:srcCompat="@drawable/avatar_icon_5" />
 
     <ImageButton
@@ -91,7 +91,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toEndOf="@+id/imageButton5"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/myphoto"
         app:srcCompat="@drawable/avatar_icon_6" />
 
     <ImageButton
@@ -101,7 +101,7 @@
     android:layout_marginStart="5dp"
     android:layout_marginTop="5dp"
     app:layout_constraintStart_toEndOf="@+id/imageButton6"
-    app:layout_constraintTop_toBottomOf="@+id/imageView"
+    app:layout_constraintTop_toBottomOf="@+id/myphoto"
     app:srcCompat="@drawable/avatar_icon_7" />
 
     <ImageButton
@@ -111,7 +111,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toEndOf="@+id/imageButton7"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/myphoto"
         app:srcCompat="@drawable/avatar_icon_8" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
