@@ -6,7 +6,7 @@ import com.litesuits.orm.db.annotation.Table;
 import com.litesuits.orm.db.enums.AssignType;
 
 @Table("recordtime")
-public class recordTime {
+public class recordTime implements Comparable<recordTime>{
 
     @PrimaryKey(AssignType.AUTO_INCREMENT)
     private int id;
@@ -48,5 +48,16 @@ public class recordTime {
                 ", startTime=" + startTime +
                 ", timeLength=" + timeLength +
                 '}';
+    }
+
+    @Override
+    public int compareTo(recordTime recordTime) {
+        if(this.getStartTime()>recordTime.getStartTime()) {
+            return 1;
+        } else if (this.getStartTime() == recordTime.getStartTime()) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }
