@@ -7,28 +7,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-
+import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
-
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.login.LoginActivity;
 import com.example.mobiledemo.ui.password.PasswordActivity;
-
 import android.app.Dialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import java.util.Calendar;
-import android.util.Log;
+
 import android.widget.Toast;
+import android.graphics.Bitmap;
+
 public class AccountActivity extends AppCompatActivity {
 
     private AccountViewModel accountViewModel;
     private Button uploadButton;
+    private ImageView mimage;
+    private static final int REQUEST_CAPTURE=101;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,7 @@ public class AccountActivity extends AppCompatActivity {
         final Button logoutButton = findViewById(R.id.account_logout);
         uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,12 +107,6 @@ public class AccountActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "click choose image",Toast.LENGTH_SHORT).show();
             }
         });
-        root.findViewById(R.id.btn_open_camera).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "click open camera",Toast.LENGTH_SHORT).show();
-            }
-        });
         root.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,5 +126,21 @@ public class AccountActivity extends AppCompatActivity {
         lp.alpha = 9f; // 透明度
         dialogWindow.setAttributes(lp);
         mCameraDialog.show();
+    }
+
+    public void takephoto(View View){
+        mimage = findViewById(R.id.imageView);
+        Intent imagetakeintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(imagetakeintent,REQUEST_CAPTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == REQUEST_CAPTURE && requestCode == RESULT_OK) {
+        Bundle extras = data.getExtras();
+        Bitmap imageBitmap = (Bitmap) extras.get("data");
+        mimage.setImageBitmap(imageBitmap);
+        //       }
+
     }
 }

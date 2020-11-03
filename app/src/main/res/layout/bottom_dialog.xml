@@ -16,6 +16,7 @@
         android:background="#cfc"
         android:gravity="center"
         android:text="Take photo"
+        android:onClick="takephoto"
         android:textColor="#000000"
         android:textSize="18sp" />
 
