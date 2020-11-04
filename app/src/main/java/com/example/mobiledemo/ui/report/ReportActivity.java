@@ -54,8 +54,9 @@ public class ReportActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ReportActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ReportActivity.this, MainActivity.class);
+//                startActivity(intent);
+                onBackPressed();
             }
         });
 

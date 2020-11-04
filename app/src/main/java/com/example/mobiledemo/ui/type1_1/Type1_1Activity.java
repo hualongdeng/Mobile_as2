@@ -28,8 +28,9 @@ public class Type1_1Activity extends AppCompatActivity{
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Type1_1Activity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(Type1_1Activity.this, MainActivity.class);
+//                startActivity(intent);
+                onBackPressed();
             }
         });
 
