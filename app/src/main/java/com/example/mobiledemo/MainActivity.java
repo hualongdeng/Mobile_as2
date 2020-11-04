@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("TAG", Settings.ACTION_USAGE_ACCESS_SETTINGS);
-//        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
