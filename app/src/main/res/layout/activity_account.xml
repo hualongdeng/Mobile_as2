@@ -9,7 +9,7 @@
         android:id="@+id/account_page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="13dp"
         android:text="Account"
         android:textColor="#E6D5D6CA"
         android:textSize="30sp"
@@ -24,7 +24,7 @@
         android:layout_width="47dp"
         android:layout_height="41dp"
         android:layout_gravity="start"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="13dp"
         android:layout_marginEnd="300dp"
         android:background="@drawable/back_button"
         android:enabled="true"
@@ -34,8 +34,8 @@
 
     <Button
         android:id="@+id/account_password"
-        android:layout_width="361dp"
-        android:layout_height="45dp"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginTop="15dp"
         android:background="@drawable/account_changepassword_big"
@@ -48,8 +48,8 @@
 
     <Button
         android:id="@+id/account_logout"
-        android:layout_width="361dp"
-        android:layout_height="45dp"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginTop="10dp"
         android:background="@drawable/account_logout_big"
@@ -61,31 +61,28 @@
 
     <Button
         android:id="@+id/account_upload"
-        android:layout_width="105dp"
-        android:layout_height="43dp"
-        android:layout_gravity="start"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="12dp"
+        android:layout_width="95dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/account_upload_big"
         android:enabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintStart_toEndOf="@+id/myphoto"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.303" />
+        app:layout_constraintBottom_toTopOf="@+id/username2" />
 
     <EditText
         android:id="@+id/birthday"
         android:layout_width="133dp"
         android:layout_height="42dp"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="28dp"
+        android:layout_marginStart="8dp"
         android:clickable="true"
         android:ems="10"
         android:focusable="false"
         android:gravity="left"
         android:hint="1900-00-00"
         android:orientation="vertical"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone5"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         app:layout_constraintTop_toBottomOf="@+id/username"
         tools:ignore="MissingConstraints" />
 
@@ -93,8 +90,8 @@
         android:id="@+id/editTextPhone"
         android:layout_width="111dp"
         android:layout_height="41dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
         android:ems="10"
         android:text="Nickname: "
         android:textSize="40px"
@@ -168,33 +165,26 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="253dp"
+        android:layout_width="200dp"
         android:layout_height="49dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
         android:hint="0400000000"
         android:inputType="phone"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         app:layout_constraintTop_toBottomOf="@+id/username2" />
 
     <EditText
         android:id="@+id/username2"
-        android:layout_width="253dp"
+        android:layout_width="200dp"
         android:layout_height="49dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
         android:hint="@string/prompt_nickname"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
 
     <ImageView
@@ -212,11 +202,10 @@
         android:layout_width="149dp"
         android:layout_height="40dp"
         android:layout_marginTop="28dp"
+        android:layout_marginStart="8dp"
         android:entries="@array/genders_array"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.168"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone6"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         app:layout_constraintTop_toBottomOf="@+id/birthday"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -224,8 +213,10 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="10dp"
         android:text="Save"
-        app:layout_constraintStart_toEndOf="@+id/account_page_title"
-        tools:layout_editor_absoluteY="10dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
