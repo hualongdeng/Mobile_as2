@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/account_back2"
+        android:id="@+id/account_back"
         android:layout_width="47dp"
         android:layout_height="41dp"
         android:layout_gravity="start"
