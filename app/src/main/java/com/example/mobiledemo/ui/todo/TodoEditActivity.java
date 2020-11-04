@@ -106,6 +106,7 @@ public class TodoEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TodoEditActivity.this, MainActivity.class);
+                intent.putExtra("fragment", 2);
                 startActivity(intent);
             }
         });
@@ -114,6 +115,7 @@ public class TodoEditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TodoEditActivity.this, TodoNewActivity.class);
                 intent.putExtra("email", email);
+                intent.putExtra("date", start_date);
                 startActivity(intent);
             }
         });
