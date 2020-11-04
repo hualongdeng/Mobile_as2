@@ -106,7 +106,7 @@ public class TodoEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TodoEditActivity.this, MainActivity.class);
-                intent.putExtra("fragment", 2);
+                intent.putExtra("fragment", 3);
                 startActivity(intent);
             }
         });
