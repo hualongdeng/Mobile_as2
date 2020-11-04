@@ -105,6 +105,16 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        mimage = findViewById(R.id.myphoto);
+        mimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccountActivity.this, ProfilePhotoActivity.class);
+                startActivity(intent);
+            }
+
+        });
+
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,12 +161,7 @@ public class AccountActivity extends AppCompatActivity {
                 }
             }
         });
-        root.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "click cancel", Toast.LENGTH_SHORT).show();
-            }
-        });
+
         mCameraDialog.setContentView(root);
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);

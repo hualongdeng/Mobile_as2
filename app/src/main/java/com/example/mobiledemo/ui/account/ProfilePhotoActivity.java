@@ -6,15 +6,19 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.password.PasswordViewModel;
 
 public class ProfilePhotoActivity extends AppCompatActivity {
+    private ProfilePhotoViewModel ProfilePhotoViewModel;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-
-        final Button backButton = findViewById(R.id.account);
+        ProfilePhotoViewModel = ViewModelProviders.of(this).get(ProfilePhotoViewModel.class);
+        final Button backButton = findViewById(R.id.account_back2);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

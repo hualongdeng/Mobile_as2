@@ -33,15 +33,4 @@
         android:textStyle="bold"
         android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/btn_cancel"
-        android:layout_width="320dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:background="#E6D5D6CA"
-        android:gravity="center"
-        android:text="Cancel"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        android:textSize="15sp" />
 </LinearLayout>
