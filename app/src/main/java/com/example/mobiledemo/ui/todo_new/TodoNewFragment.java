@@ -159,7 +159,9 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         @Override
                         public void onResponse(String response) {
                             Log.d("TAG", response);
+                            String start_date = getActivity().getIntent().getStringExtra("date");
                             Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                            intent.putExtra("date", start_date);
                             startActivity(intent);
                         }
                     }, new Response.ErrorListener() {
@@ -188,7 +190,9 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                             @Override
                             public void onResponse(String response) {
                                 Log.d("TAG", response);
+                                String start_date = getActivity().getIntent().getStringExtra("date");
                                 Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                                intent.putExtra("date", start_date);
                                 startActivity(intent);
                             }
                         }, new Response.ErrorListener() {
