@@ -27,6 +27,7 @@ public class TodoNewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_new);
         todoNewViewModel = ViewModelProviders.of(this).get(TodoNewViewModel.class);
+        final String start_date = getIntent().getStringExtra("date");
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.todo_new_container, new TodoNewFragment())
@@ -37,6 +38,7 @@ public class TodoNewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TodoNewActivity.this, TodoEditActivity.class);
+                intent.putExtra("date", start_date);
                 startActivity(intent);
             }
         });

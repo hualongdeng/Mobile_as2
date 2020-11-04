@@ -64,6 +64,22 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         });
+        textViewHolder.endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener != null){
+                    onItemClickListener.OnItemClick(v, position);
+                }
+            }
+        });
+        textViewHolder.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener != null){
+                    onItemClickListener.OnItemClick(v, position);
+                }
+            }
+        });
     }
 
     @Override
@@ -79,7 +95,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 文字item的holder
      */
     class TextViewHolder extends RecyclerView.ViewHolder{
-
         private TextView startTime, endTime, title;
         public TextViewHolder(View itemView) {
             super(itemView);

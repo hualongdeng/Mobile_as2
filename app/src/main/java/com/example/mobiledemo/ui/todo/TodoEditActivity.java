@@ -60,7 +60,7 @@ public class TodoEditActivity extends AppCompatActivity {
         final Button backButton = findViewById(R.id.todo_edit_back);
         final Button addNewButton = findViewById(R.id.todo_add_new);
 
-        String start_date = getIntent().getStringExtra("date");
+        final String start_date = getIntent().getStringExtra("date");
         /*1,设置管理器*/
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         /*2,设置适配器*/
@@ -81,6 +81,7 @@ public class TodoEditActivity extends AppCompatActivity {
                 item.add(mDatas.get(position));
                 bundle.putSerializable("data", (Serializable) item);
                 intent.putExtras(bundle);
+                intent.putExtra("date", start_date);
                 startActivity(intent);
 //                Toast.makeText(TodoEditActivity.this, mDatas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
 //                AlertDialog.Builder builder2 = new AlertDialog.Builder(TodoEditActivity.this);
