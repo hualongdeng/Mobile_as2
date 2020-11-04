@@ -67,8 +67,8 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/account_upload_big"
         android:enabled="true"
-        app:layout_constraintStart_toEndOf="@+id/myphoto"
-        app:layout_constraintBottom_toTopOf="@+id/username2" />
+        app:layout_constraintStart_toEndOf="@+id/myPhoto"
+        app:layout_constraintBottom_toTopOf="@+id/myNickname" />
 
     <EditText
         android:id="@+id/birthday"
@@ -80,10 +80,10 @@
         android:ems="10"
         android:focusable="false"
         android:gravity="left"
-        android:hint="1900-00-00"
+        android:hint="1900-01-01"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
-        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/myPhonenumber"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -164,7 +164,7 @@
         app:layout_constraintTop_toBottomOf="@+id/account_back" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/myPhonenumber"
         android:layout_width="200dp"
         android:layout_height="49dp"
         android:layout_marginTop="20dp"
@@ -173,10 +173,10 @@
         android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
-        app:layout_constraintTop_toBottomOf="@+id/username2" />
+        app:layout_constraintTop_toBottomOf="@+id/myNickname" />
 
     <EditText
-        android:id="@+id/username2"
+        android:id="@+id/myNickname"
         android:layout_width="200dp"
         android:layout_height="49dp"
         android:layout_marginTop="10dp"
@@ -188,21 +188,21 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone3" />
 
     <ImageView
-        android:id="@+id/myphoto"
+        android:id="@+id/myPhoto"
         android:layout_width="114dp"
         android:layout_height="98dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/avatar_icon_1"
-        app:layout_constraintBottom_toTopOf="@+id/username2"
+        app:layout_constraintBottom_toTopOf="@+id/myNickname"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3" />
 
     <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="149dp"
         android:layout_height="40dp"
-        android:layout_marginTop="28dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
         android:entries="@array/genders_array"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
@@ -218,5 +218,17 @@
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/getinf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginBottom="15dp"
+        android:text="getinf"
+        app:layout_constraintBottom_toTopOf="@+id/account_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone2"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
