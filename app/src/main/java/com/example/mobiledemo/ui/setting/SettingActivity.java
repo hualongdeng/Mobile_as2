@@ -29,6 +29,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+                intent.putExtra("fragment", 1);
                 startActivity(intent);
             }
         });
