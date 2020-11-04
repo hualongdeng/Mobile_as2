@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/account_back"
+        android:id="@+id/account_back2"
         android:layout_width="47dp"
         android:layout_height="41dp"
         android:layout_gravity="start"
@@ -42,7 +42,7 @@
         android:layout_marginTop="50dp"
         android:src="@drawable/avatar_icon_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/account_back" />
+        app:layout_constraintTop_toBottomOf="@+id/account_back2" />
 
     <ImageButton
         android:id="@+id/imageButton2"
@@ -51,7 +51,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="50dp"
         app:layout_constraintStart_toEndOf="@+id/myphoto"
-        app:layout_constraintTop_toBottomOf="@+id/account_back"
+        app:layout_constraintTop_toBottomOf="@+id/account_back2"
         app:srcCompat="@drawable/avatar_icon_2" />
 
     <ImageButton
@@ -61,7 +61,7 @@
     android:layout_marginStart="5dp"
     android:layout_marginTop="50dp"
     app:layout_constraintStart_toEndOf="@+id/imageButton2"
-    app:layout_constraintTop_toBottomOf="@+id/account_back"
+    app:layout_constraintTop_toBottomOf="@+id/account_back2"
     app:srcCompat="@drawable/avatar_icon_3" />
 
     <ImageButton
@@ -71,7 +71,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="50dp"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
-        app:layout_constraintTop_toBottomOf="@+id/account_back"
+        app:layout_constraintTop_toBottomOf="@+id/account_back2"
         app:srcCompat="@drawable/avatar_icon_4" />
 
     <ImageButton
