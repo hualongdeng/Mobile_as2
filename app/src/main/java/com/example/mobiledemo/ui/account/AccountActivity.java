@@ -51,11 +51,9 @@ public class AccountActivity extends AppCompatActivity {
     private static final int REQUEST_CAPTURE = 101;
     private static final int REQUEST_TAKE_PHOTO = 1; // 拍照标识
     private static final int REQUEST_CHOOSE_PHOTO = 2; // 选择相册标示符
-
     // 获取拍照权限标识
     private static final int PERMISSION_REQUEST_TAKE_PHONE = 6;
     private static final int PERMISSION_REQUEST_CHOOSE_PICTURE = 7;
-
     private File output;  // 设置拍照的图片文件
     private Uri photoUri;  // 拍摄照片的路径
 
@@ -68,7 +66,6 @@ public class AccountActivity extends AppCompatActivity {
         final Button logoutButton = findViewById(R.id.account_logout);
         uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,10 +130,9 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
-    private void setDialog() {
-        Dialog mCameraDialog = new Dialog(this, R.style.BottomDialog);
-        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
-                R.layout.bottom_dialog, null);
+    public void setDialog() {
+        final Dialog mCameraDialog = new Dialog(this, R.style.BottomDialog);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.bottom_dialog, null);
         //初始化视图
         root.findViewById(R.id.btn_choose_img).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +142,7 @@ public class AccountActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(AccountActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CHOOSE_PICTURE);
                 } else {
                     choosePhoto();
+                    mCameraDialog.hide();
                 }
             }
         });
@@ -158,6 +155,7 @@ public class AccountActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Permission camera pass", Toast.LENGTH_SHORT).show();
                     takePhoto();
+                    mCameraDialog.hide();
                 }
             }
         });
@@ -193,12 +191,6 @@ public class AccountActivity extends AppCompatActivity {
         startActivityForResult(imagetakeintent, REQUEST_TAKE_PHOTO);
     }
 
-    public void takephoto(View View) {
-        mimage = findViewById(R.id.myphoto);
-        Intent imagetakeintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(imagetakeintent, REQUEST_CAPTURE);
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -260,19 +252,18 @@ public class AccountActivity extends AppCompatActivity {
                     try {
                         //获取图片
                         Bitmap bitmap2 = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                        Toast.makeText(this, "获取图片 完毕", Toast.LENGTH_SHORT).show();
-                        //mimage.setImageBitmap(bitmap2);
-                        Toast.makeText(this, "显示 完毕", Toast.LENGTH_SHORT).show();
+                        mimage.setImageBitmap(bitmap2);
                     } catch (FileNotFoundException e) {
-                        Log.e("Exception", e.getMessage(),e);
+                        Log.e("Exception", e.getMessage(), e);
                     }
-                }else{
+                } else {
                     //操作错误或没有选择图片
                     Log.i("MainActivtiy", "operation error");
                 }
+                //mCameraDialog.cancel();
                 break;
         }
-
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }
