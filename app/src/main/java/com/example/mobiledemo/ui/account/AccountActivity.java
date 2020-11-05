@@ -90,7 +90,7 @@ public class AccountActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-        accountViewModel = ViewModelProviders.of(this).get(AccountViewModel.class);
+//        accountViewModel = ViewModelProviders.of(this).get(AccountViewModel.class);
         final Button backButton = findViewById(R.id.account_back);
         final Button passwordButton = findViewById(R.id.account_password);
         final Button logoutButton = findViewById(R.id.account_logout);
