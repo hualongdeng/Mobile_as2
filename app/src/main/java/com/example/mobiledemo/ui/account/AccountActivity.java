@@ -507,6 +507,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         };
         updateQueue.add(stringRequest);
+        Toast.makeText(this, "Account information saved", Toast.LENGTH_SHORT).show();
     }
 
     private void setphoto(String avatar) {
