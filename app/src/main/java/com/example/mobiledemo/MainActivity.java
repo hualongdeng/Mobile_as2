@@ -58,26 +58,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("TAG", Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+//        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         try {
-            List<AppEntity> applist = new ArrayList<AppEntity>();
-            PackageManager packageManager = this.getPackageManager();
-            List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
-            for (int i = 0; i < packageInfoList.size(); i++) {
-                PackageInfo pak = (PackageInfo) packageInfoList.get(i);
-                if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
-                    applist.add(new AppEntity(pak.packageName, 1));
-                }
-            }
-            SharedPreferences.Editor editor = getSharedPreferences("appList", MODE_PRIVATE).edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(applist);
-            Log.d("TAG", "saved json is "+ json);
-            editor.putString("appListJson", json);
-            editor.commit();
+            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
         } catch (Exception e) {
             e.printStackTrace();
             List<AppEntity> applist = new ArrayList<AppEntity>();
