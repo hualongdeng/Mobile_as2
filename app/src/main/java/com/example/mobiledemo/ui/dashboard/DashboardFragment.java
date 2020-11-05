@@ -1,6 +1,8 @@
 package com.example.mobiledemo.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.R;
-import com.example.mobiledemo.data.recordTime;
+import com.example.mobiledemo.ui.todo.TodoEditActivity;
 import com.example.mobiledemo.utils.DbUtils;
+import com.example.mobiledemo.utils.SPUtils;
 import com.example.mobiledemo.utils.TimeUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, Chronometer.OnChronometerTickListener{
 
@@ -29,6 +42,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private long lastPause;
     private boolean start = false;
     private boolean isRunning = false;
+
+    private String update_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/recordtime_update";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,11 +89,36 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.btnReset:
                 if (!isRunning) {
-                    recordTime record = new recordTime();
-                    record.setStartTime(TimeUtils.getCurrentLongTime());
-                    long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                    record.setTimeLength(elapsedMillis);
-                    DbUtils.insert(record);
+//                    recordTime record = new recordTime();
+//                    record.setStartTime(TimeUtils.getCurrentLongTime());
+                    final long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+//                    record.setTimeLength(elapsedMillis);
+//                    DbUtils.insert(record);
+
+
+                    RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, update_url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("TAG", response);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("TAG", error.getMessage(), error);
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("user_id", SPUtils.getString(getContext(),"account"));
+                            map.put("start_time", TimeUtils.getCurrentLongTime()+"");
+                            map.put("time_length", elapsedMillis+"");
+
+                            return map;
+                        }
+                    };
+                    mQueue.add(stringRequest);
 
                     start = false;
                     chronometer.setBase(SystemClock.elapsedRealtime());

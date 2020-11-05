@@ -5,17 +5,15 @@ import com.litesuits.orm.db.annotation.PrimaryKey;
 import com.litesuits.orm.db.annotation.Table;
 import com.litesuits.orm.db.enums.AssignType;
 
-@Table("recordtime")
-public class recordTime implements Comparable<recordTime>{
+public class RecordTime implements Comparable<RecordTime>{
 
-    @PrimaryKey(AssignType.AUTO_INCREMENT)
     private int id;
 
-    @Column("starttime")
-    private long startTime;
+    private String email;
 
-    @Column("timelength")
-    private long timeLength;
+    private String start_time;
+
+    private String time_length;
 
     public int getId() {
         return id;
@@ -25,36 +23,45 @@ public class recordTime implements Comparable<recordTime>{
         this.id = id;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public String getStart_time() {
+        return start_time;
     }
 
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
     }
 
-    public long getTimeLength() {
-        return timeLength;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTimeLength(long timeLength) {
-        this.timeLength = timeLength;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTime_length() {
+        return time_length;
+    }
+
+    public void setTime_length(String time_length) {
+        this.time_length = time_length;
     }
 
     @Override
     public String toString() {
-        return "recordTime{" +
+        return "RecordTime{" +
                 "id=" + id +
-                ", startTime=" + startTime +
-                ", timeLength=" + timeLength +
+                ", email='" + email + '\'' +
+                ", start_time='" + start_time + '\'' +
+                ", time_length='" + time_length + '\'' +
                 '}';
     }
 
     @Override
-    public int compareTo(recordTime recordTime) {
-        if(this.getStartTime()>recordTime.getStartTime()) {
+    public int compareTo(RecordTime recordTime) {
+        if(Long.parseLong(this.getStart_time())>Long.parseLong(recordTime.getStart_time())) {
             return 1;
-        } else if (this.getStartTime() == recordTime.getStartTime()) {
+        } else if (Long.parseLong(this.getStart_time())==Long.parseLong(recordTime.getStart_time())) {
             return 0;
         } else {
             return -1;
