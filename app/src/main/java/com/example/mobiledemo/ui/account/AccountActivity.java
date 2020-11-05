@@ -19,17 +19,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.login.LoginActivity;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.password.PasswordActivity;
+import com.example.mobiledemo.ui.todo.TodoEditActivity;
+
 import android.app.Dialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -56,7 +60,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -71,8 +78,13 @@ public class AccountActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_TAKE_PHONE = 6;
     private static final int PERMISSION_REQUEST_CHOOSE_PICTURE = 7;
     private File output;  // 设置拍照的图片文件
-    private Uri photoUri;  // 拍摄照片的路径
-    String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
+    private String oldpw_me;
+    private String gender_me;
+    private String email_me;
+    private String avatar_me = "1";
+    private String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
+    private String updateurl = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user_update";
+    private int genderindex = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +95,12 @@ public class AccountActivity extends AppCompatActivity {
         final Button logoutButton = findViewById(R.id.account_logout);
         uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
-        final Button getinfor = findViewById(R.id.getinf);
+        final Button saveupdate = findViewById(R.id.savebutton);
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        Log.d("TAG-login_account",login_account);
+        initListData();
+        //String photoind = "1";
+        //try { getIntent().getStringExtra("photoIndex");
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +123,7 @@ public class AccountActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                eText.setText(year+"-"+(monthOfYear + 1)+"-"+dayOfMonth);
+                                eText.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                             }
                         }, year, month, day);
                 datepicker.show();
@@ -124,27 +141,34 @@ public class AccountActivity extends AppCompatActivity {
         mimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AccountActivity.this, ProfilePhotoActivity.class);
-                startActivity(intent);
+                setcentralDialog();
+//                Intent intent = new Intent(AccountActivity.this, ProfilePhotoActivity.class);
+//                startActivity(intent);
             }
 
         });
 
+        saveupdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateInf();
+            }
+        });
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDialog();
+                setbottomDialog();
             }
         });
 
-        getinfor.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                initListData();
-            }
-        });
+//        getinfor.setOnClickListener(new View.OnClickListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onClick(View v) {
+//                initListData();
+//            }
+//        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,14 +180,14 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
-    public void setDialog() {
+    public void setbottomDialog() {
         final Dialog mCameraDialog = new Dialog(this, R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.bottom_dialog, null);
         //初始化视图
         root.findViewById(R.id.btn_choose_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "click choose image", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "click choose image", Toast.LENGTH_SHORT).show();
                 if (ContextCompat.checkSelfPermission(AccountActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(AccountActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CHOOSE_PICTURE);
                 } else {
@@ -201,11 +225,86 @@ public class AccountActivity extends AppCompatActivity {
         mCameraDialog.show();
     }
 
+
+    public void setcentralDialog() {
+        final Dialog photoDialog = new Dialog(this, R.style.BottomDialog);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.central_dialog, null);
+        //初始化视图
+        root.findViewById(R.id.photoButton1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("1");
+                photoDialog.hide();
+                }
+        });
+        root.findViewById(R.id.photoButton2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("2");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("3");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("4");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("5");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("6");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton7).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("7");
+                photoDialog.hide();
+            }
+        });
+        root.findViewById(R.id.photoButton8).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setphoto("8");
+                photoDialog.hide();
+            }
+        });
+        photoDialog.setContentView(root);
+        Window dialogWindow = photoDialog.getWindow();
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.width = (int) getResources().getDisplayMetrics().widthPixels; // 宽度
+        root.measure(0, 0);
+        lp.height = root.getMeasuredHeight();
+        lp.x = 0; // 新位置X坐标
+        lp.y = 600; // 新位置Y坐标
+        lp.alpha = 9f; // 透明度
+        dialogWindow.setAttributes(lp);
+        photoDialog.show();
+    }
+
     private void choosePhoto() {
         // 选择相册操作
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        Toast.makeText(getApplicationContext(), "chose", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "chose", Toast.LENGTH_SHORT).show();
         startActivityForResult(intent, REQUEST_CHOOSE_PHOTO);
 
     }
@@ -267,14 +366,14 @@ public class AccountActivity extends AppCompatActivity {
                 break;
             // 调用系统相册的回调
             case REQUEST_CHOOSE_PHOTO:
-                Toast.makeText(this, "选择完毕", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "CHOOSE_PHOTO", Toast.LENGTH_SHORT).show();
                 if (resultCode == RESULT_OK) {
-                    Toast.makeText(this, "进入验证", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "进入验证", Toast.LENGTH_SHORT).show();
                     Uri uri = data.getData();
-                    Toast.makeText(this, "uri 完毕", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "uri 完毕", Toast.LENGTH_SHORT).show();
                     //使用content的接口
                     ContentResolver cr = this.getContentResolver();
-                    Toast.makeText(this, "ContentResolver 完毕", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "ContentResolver 完毕", Toast.LENGTH_SHORT).show();
                     try {
                         //获取图片
                         Bitmap bitmap2 = BitmapFactory.decodeStream(cr.openInputStream(uri));
@@ -292,23 +391,22 @@ public class AccountActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initListData() {
-        final EditText phoneNumber =(EditText)findViewById(R.id.myPhonenumber);
-        final EditText myNickname =(EditText)findViewById(R.id.myNickname);
-        final EditText myBirthday =(EditText)findViewById(R.id.birthday);
+        final EditText phoneNumber = (EditText) findViewById(R.id.myPhonenumber);
+        final EditText myNickname = (EditText) findViewById(R.id.myNickname);
+        final EditText myBirthday = (EditText) findViewById(R.id.birthday);
         final Spinner myGender = findViewById(R.id.spinner_gender);
+        final EditText myLocation = (EditText) findViewById(R.id.getlocation);
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        Log.d("TAG-login_account",login_account);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        Toast.makeText(getApplicationContext(), "sent request", Toast.LENGTH_SHORT).show();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url +login_account, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Toast.makeText(getApplicationContext(), "onResponse", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "onResponse", Toast.LENGTH_SHORT).show();
                         try {
-                            String ddd = response.getJSONObject(0).toString();
-                            Toast.makeText(getApplicationContext(), ddd, Toast.LENGTH_SHORT).show();
-                            int i=0;
+                            int i = 3;
                             //int id = response.getJSONObject(0).getInt("id");
                             //Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
                             String birthday = response.getJSONObject(0).getString("birthday");
@@ -317,15 +415,28 @@ public class AccountActivity extends AppCompatActivity {
                             myNickname.setText(nickname);
                             String phone = response.getJSONObject(0).getString("phone");
                             phoneNumber.setText(phone);
-                            Toast.makeText(getApplicationContext(), birthday, Toast.LENGTH_SHORT).show();
+                            String contry = response.getJSONObject(0).getString("location");
+                            myLocation.setText(contry);
+                            email_me = response.getJSONObject(0).getString("email");
+                            avatar_me = response.getJSONObject(0).getString("avatar");
+                            oldpw_me = response.getJSONObject(0).getString("password");
                             String gender = response.getJSONObject(0).getString("gender");
-                            switch (gender){
-                                case "male":i=0;break;
-                                case "female":i=1;break;
-                                case "others":i=2;break;
-                                case "prefer not to say":i=3;break;
+                            switch (gender) {
+                                case "male":
+                                    i = 0;
+                                    break;
+                                case "female":
+                                    i = 1;
+                                    break;
+                                case "others":
+                                    i = 2;
+                                    break;
+                                case "prefer not to say":
+                                    i = 3;
+                                    break;
                             }
                             myGender.setSelection(i);
+                            setphoto(avatar_me);
                             // String place = response.getJSONObject(i).getString("location");
                         } catch (JSONException e) {
                             Toast.makeText(getApplicationContext(), "catch exception", Toast.LENGTH_SHORT).show();
@@ -340,6 +451,70 @@ public class AccountActivity extends AppCompatActivity {
         });
         mQueue.add(jsonArrayRequest);
     }
+
+    private void updateInf()  {
+        final Spinner myGender = findViewById(R.id.spinner_gender);
+        genderindex = myGender.getSelectedItemPosition();
+        switch (genderindex) {
+            case 0:
+                gender_me = "male";
+                break;
+            case 1:
+                gender_me = "female";
+                break;
+            case 2:
+                gender_me = "others";
+                break;
+            case 3:
+                gender_me = "prefer not to say";
+                break;
+        }
+        RequestQueue updateQueue = Volley.newRequestQueue(this.getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, updateurl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("TAG-target", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG-err", error.getMessage(), error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                final EditText phoneNumber2 = (EditText) findViewById(R.id.myPhonenumber);
+                final EditText myNickname2 = (EditText) findViewById(R.id.myNickname);
+                final EditText myBirthday2 = (EditText) findViewById(R.id.birthday);
+                final EditText myLocation2 = (EditText) findViewById(R.id.getlocation);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("nickname", myNickname2.getText().toString());
+                map.put("username", "admin");
+                map.put("old_password", oldpw_me);
+                map.put("gender", gender_me);
+                map.put("birthday", myBirthday2.getText().toString());
+                map.put("phone", phoneNumber2.getText().toString());
+                Log.d("TAG-phoneNumber2", phoneNumber2.getText().toString());
+                map.put("location", myLocation2.getText().toString());
+                map.put("avatar", avatar_me);
+                map.put("email", email_me);
+                map.put("new_password", oldpw_me);
+                return map;
+            }
+        };
+        updateQueue.add(stringRequest);
+    }
+
+    public void setphoto(String avatar) {
+        ImageView mimage = findViewById(R.id.myPhoto);
+        String photoaddress = "avatar_icon_"+avatar;
+        int id=getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
+        //int id=getResources().getIdentifier("avatar_icon_2", "drawable", context.getPackageName());
+        Log.d("TAG-photo",Integer.toString(id));
+        mimage.setImageResource(id);
+        avatar_me=avatar;
+    }
 }
+
 
 
