@@ -2,36 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:background="#E6D5D6CA"
+    android:layout_height="300dp"
+    android:background="#000000"
     android:orientation="vertical">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:background="#4f5b4f"
-        >
-        <TextView
-            android:id="@+id/password_page_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Change Avatar"
-            android:textColor="#E6D5D6CA"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
         >
 
         <ImageButton
             android:id="@+id/photoButton1"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:layout_weight="3"
             android:scaleType="centerCrop"
             android:src="@drawable/avatar_icon_1"
@@ -41,7 +26,7 @@
             android:id="@+id/photoButton2"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_2"
@@ -51,7 +36,7 @@
             android:id="@+id/photoButton3"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_3"
@@ -60,7 +45,7 @@
             android:id="@+id/photoButton4"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_4"
@@ -70,14 +55,14 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
-
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
         >
         <ImageButton
             android:id="@+id/photoButton5"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_5"
@@ -87,7 +72,7 @@
             android:id="@+id/photoButton6"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_6"
@@ -97,7 +82,7 @@
             android:id="@+id/photoButton7"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_7"
@@ -106,7 +91,7 @@
             android:id="@+id/photoButton8"
             android:textSize="20dp"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:layout_weight="3"
             android:src="@drawable/avatar_icon_8"

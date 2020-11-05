@@ -1,11 +1,15 @@
 package com.example.mobiledemo.ui.report;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,6 +32,7 @@ import com.example.mobiledemo.utils.TimeUtils;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -177,25 +182,40 @@ public class ReportActivity extends AppCompatActivity {
         if (!values.isEmpty()) {
             text_all(values);
         }
+
+        setDesc();
+
     }
 
     // set y axis
     private void xText() {
         XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.TOP);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setValueFormatter(new IAxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                return (int)value;
+//            }
+//        });
     }
 
     //set x axis
     private void yText() {
         YAxis yAxisLeft = lineChart.getAxisLeft();
-        yAxisLeft.setEnabled(false);
+        yAxisLeft.setEnabled(true);
+        yAxisLeft.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return (int)value+"s";
+            }
+        });
         YAxis yAxisRight = lineChart.getAxisRight();
         yAxisRight.setEnabled(false);
     }
 
     private void text_all(ArrayList<Entry> values) {
         LineDataSet set1;
-        set1 = new LineDataSet(values, "Time Report");
+        set1 = new LineDataSet(values, "");
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setColor(Color.BLACK);
         set1.setLineWidth(3);
@@ -212,6 +232,10 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.setData(data);
         lineChart.invalidate();
     }
+    public void setDesc(){
+        lineChart.setDescription(null);//添加给LineChart
+    }
+
 
     public static class MonthlyIntegerYValueFormatter implements IValueFormatter {
         @Override
