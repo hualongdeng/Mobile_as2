@@ -126,7 +126,8 @@ public class TodoEditActivity extends AppCompatActivity {
 //        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com" + start_date, null,
+        String login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account + start_date, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

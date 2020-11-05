@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class TodoNewFragment extends PreferenceFragmentCompat {
     List<TodoEntity> todo;
     EditTextPreference titleView, placeView;
@@ -181,6 +183,7 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                 public boolean onPreferenceClick(Preference arg0) {
                     RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
                     String url;
+                    final String login_account = getActivity().getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
                     if (new_or_not == 1) {
                         url = get_url;
                     } else {
@@ -206,7 +209,7 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                             Map<String, String> map = new HashMap<String, String>();
                             if (new_or_not == 1) {
                                 map.put("title", titleView.getText());
-                                map.put("email", email);
+                                map.put("email", login_account);
                                 map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
                                 map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
                                 map.put("location", placeView.getText());

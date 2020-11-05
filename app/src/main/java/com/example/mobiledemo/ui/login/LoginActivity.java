@@ -5,6 +5,8 @@ import android.app.Activity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -95,6 +97,10 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.d("TAG", response);
                         if (response.equals("True")){
+                            SharedPreferences sharedPref = getSharedPreferences("account", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString("account", usernameEditText.getText().toString());
+                            editor.commit();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             setResult(Activity.RESULT_OK);
