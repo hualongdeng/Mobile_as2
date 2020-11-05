@@ -7,10 +7,10 @@
             android:title="Application list"
             android:key="setting_application"/>
         <SwitchPreference
-            android:key="switch_preference"
+            android:key="switch_volume"
             android:title="Surrounding volume monitor"/>
         <SwitchPreference
-            android:key="switch_preference"
+            android:key="switch_gps"
             android:title="GPS monitor"/>
     </PreferenceCategory>
 </PreferenceScreen>
