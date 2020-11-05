@@ -26,6 +26,7 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
     static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(
             SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
             AudioFormat.ENCODING_PCM_16BIT);
+    Object mLock;
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.monitor_setting, rootKey);
@@ -40,27 +41,29 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt("volume_monitor", 1);
                     editor.commit();
-
+                    mLock = new Object();
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            mAudioRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                                    SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
+                                    AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
+                            mAudioRecorder.startRecording();
                             while ((getActivity().getSharedPreferences("volume_monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
-                                try {
-                                    mAudioRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                                            SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
-                                            AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
-                                    Thread.sleep(1000);
-                                    mAudioRecorder.startRecording();
-                                    short[] buffer = new short[BUFFER_SIZE];
-                                    double volume = getVolume(buffer);
-                                    Log.e("TAG", "分贝值:" + volume);
-                                    mAudioRecorder.stop();
-                                    mAudioRecorder.release();
-                                    mAudioRecorder = null;
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                short[] buffer = new short[BUFFER_SIZE];
+                                double volume = getVolume(buffer);
+                                Log.e("TAG", "分贝值:" + volume);
+                                synchronized (mLock) {
+                                    try {
+                                        mLock.wait(100);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
+                            mAudioRecorder.stop();
+                            mAudioRecorder.release();
+                            mAudioRecorder = null;
                         }
                     });
                     thread.start();

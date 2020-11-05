@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,16 +25,27 @@ import android.widget.Toast;
 
 import android.content.Intent;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.register.RegisterActivity;
 import com.example.mobiledemo.ui.login.LoginViewModel;
 import com.example.mobiledemo.ui.login.LoginViewModelFactory;
+import com.example.mobiledemo.ui.todo.TodoEditActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-
+    String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/login";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +88,37 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                 }
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                setResult(Activity.RESULT_OK);
-                //Complete and destroy login activity once successful
-                finish();
+
+                RequestQueue mQueue = Volley.newRequestQueue(LoginActivity.this);
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("TAG", response);
+                        if (response.equals("True")){
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+                        else {
+                            LoginFailed(response);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("email", usernameEditText.getText().toString());
+                        map.put("password", passwordEditText.getText().toString());
+                        return map;
+                    }
+                };
+                mQueue.add(stringRequest);
             }
         });
 
@@ -140,5 +178,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    private void LoginFailed(String response) {
+        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
     }
 }
