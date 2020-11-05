@@ -1,6 +1,5 @@
 package com.example.mobiledemo;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -16,11 +15,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.ui.home.HomeTodoFragment;
 import com.example.mobiledemo.ui.notifications.NotificationsFragment;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.setting.AppEntity;
-import com.example.mobiledemo.ui.todo_new.TodoNewFragment;
 import com.example.mobiledemo.utils.DbUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -34,14 +38,22 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity {
     int fragment = 0;
+    private List<LocalDateTime> mDatas;
+    String email = "123@123.com";
+    String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +153,52 @@ public class MainActivity extends AppCompatActivity {
             });
             thread2.start();
         }
+
+        Thread alarm_thread = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH)+1;
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int min = calendar.get(Calendar.MINUTE);
+                        String start_date = "&start_time=" + year+"-"+month+"-"+day;
+                        LocalDateTime now = LocalDateTime.of(year, month, day, hour, min);
+                        initListData(start_date);
+
+                        Thread.sleep(1000);
+                        Log.d("SIZE", String.valueOf(mDatas.size()));
+                        for (int i = 0; i < mDatas.size(); i++) {
+                            Log.d("TIME", now.toString());
+                            Log.d("TIME", mDatas.get(i).toString());
+                            if (mDatas.get(i).toString().equals(now.toString())) {
+                                int importance = NotificationManager.IMPORTANCE_HIGH;
+                                createNotificationChannel("alert", "stop", importance);
+                                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                        .setContentTitle("It is time!")
+                                        .setContentText("Just do it.")
+                                        .setWhen(System.currentTimeMillis())
+                                        .setSmallIcon(R.drawable.avatar_icon_1)
+//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                        .setAutoCancel(true)
+                                        .build();
+                                manager.notify(100, notification);
+                            }
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        alarm_thread.start();
+
         navView.setItemIconTintList(null);
         navView.setItemIconSize(200);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -196,4 +254,48 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.createNotificationChannel(channel);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initListData(String start_date) {
+//        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
+        mDatas = new ArrayList<LocalDateTime>(10);
+        RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com" + start_date, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for(int i=0; i<response.length(); i++){
+                                String [] start_time_draft = response.getJSONObject(i).getString("start_time").split("[-:T]");
+                                int start_year = Integer.parseInt(start_time_draft[0]);
+                                int start_mon = Integer.parseInt(start_time_draft[1]);
+                                int start_day = Integer.parseInt(start_time_draft[2]);
+                                int start_hour = Integer.parseInt(start_time_draft[3]);
+                                int start_minute = Integer.parseInt(start_time_draft[4]);
+                                int remind = response.getJSONObject(i).getInt("remind");
+                                LocalDateTime start_time = LocalDateTime.of(start_year, start_mon, start_day, start_hour, start_minute);
+                                if (remind == 1) {
+                                    LocalDateTime new_start_time = start_time.minusMinutes(10);
+                                    mDatas.add(new_start_time);
+                                }
+                                else if (remind == 2){
+                                    LocalDateTime new_start_time = start_time.minusMinutes(30);
+                                    mDatas.add(new_start_time);
+                                }
+                                else {
+                                    mDatas.add(start_time);
+                                }
+                            }
+                            Log.d("TAG", mDatas.size() + "zxc");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(jsonArrayRequest);
+    }
 }
