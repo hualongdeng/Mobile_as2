@@ -2,7 +2,9 @@ package com.example.mobiledemo.ui.report;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,11 +12,18 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
-import com.example.mobiledemo.data.recordTime;
+import com.example.mobiledemo.data.RecordTime;
 import com.example.mobiledemo.ui.account.AccountActivity;
 import com.example.mobiledemo.utils.DbUtils;
+import com.example.mobiledemo.utils.SPUtils;
 import com.example.mobiledemo.utils.TimeUtils;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -31,6 +40,10 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +54,8 @@ public class ReportActivity extends AppCompatActivity {
     private ReportViewModel reportViewModel;
     private TextView reportTv;
     private LineChart lineChart;
+    private List<RecordTime> recordTimeList;
+    private String get_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/recordtime";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,35 +79,91 @@ public class ReportActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        String type = getIntent().getStringExtra("type");
-        long sum = 0;
-        if (type.equals("day")) {
-            List<recordTime> recordTimeList = DbUtils.getQueryAll(recordTime.class);
-            for (recordTime record :
-                    recordTimeList) {
-                sum+=record.getTimeLength()/1000;
-            }
-            reportTv.setText("Today, you have used this app for " + sum + " seconds.");
-        } else if (type.equals("week")) {
-            reportTv.setText("This week, you have used this app for " + sum + " seconds.");
-        } else if (type.equals("month")) {
-            reportTv.setText("This month, you have used this app for " + sum + " seconds.");
-        }
 
-        drawLineChart();
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest deleteRequest = new StringRequest(Request.Method.GET, get_url + "?user_id=" + SPUtils.getString(this, "account"), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("TAG", response);
+
+                Gson gson = new Gson();//创建Gson对象
+                JsonParser jsonParser = new JsonParser();
+                JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();//获取JsonArray对象
+                ArrayList<RecordTime> beans = new ArrayList<>();
+                for (JsonElement bean : jsonElements) {
+                    RecordTime bean1 = gson.fromJson(bean, RecordTime.class);//解析
+                    beans.add(bean1);
+                }
+                recordTimeList = beans;
+
+
+                String type = getIntent().getStringExtra("type");
+                long sum = 0;
+                if (type.equals("day")) {
+                    for (RecordTime record :
+                            recordTimeList) {
+                        if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastDayTimestamp()/1000)
+                            sum+=Long.parseLong(record.getTime_length())/1000;
+                    }
+                    reportTv.setText("Today, you have used this app for " + sum + " seconds.");
+                } else if (type.equals("week")) {
+                    for (RecordTime record :
+                            recordTimeList) {
+                        if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastWeekTimestamp()/1000)
+                            sum+=Long.parseLong(record.getTime_length())/1000;
+                    }
+                    reportTv.setText("This week, you have used this app for " + sum + " seconds.");
+                } else if (type.equals("month")) {
+                    for (RecordTime record :
+                            recordTimeList) {
+                        if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastMonthTimestamp()/1000)
+                            sum+=Long.parseLong(record.getTime_length())/1000;
+                    }
+                    reportTv.setText("This month, you have used this app for " + sum + " seconds.");
+                }
+
+                drawLineChart();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(deleteRequest);
+
     }
 
     public void drawLineChart(){
 
-        List<recordTime> recordTimes = DbUtils.getQueryAll(recordTime.class);
-        Collections.reverse(recordTimes);
+        List<RecordTime> tempTimes = recordTimeList;
+        Collections.sort(tempTimes);
+
+        List<RecordTime> recordTimes = new ArrayList<RecordTime>();
+
+        String type = getIntent().getStringExtra("type");
+        for(int i=0; i<tempTimes.size(); i++) {
+            RecordTime record = tempTimes.get(i);
+            if (type.equals("day")) {
+                if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastDayTimestamp()/1000)
+                    recordTimes.add(record);
+            } else if (type.equals("week")) {
+                if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastWeekTimestamp()/1000)
+                    recordTimes.add(record);
+            } else if (type.equals("month")) {
+                if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastMonthTimestamp()/1000)
+                    recordTimes.add(record);
+            }
+        }
+
         ArrayList<Entry> values = new ArrayList<>();
         //add data
         if (!recordTimes.isEmpty()) {
             int i=0;
-            for (; i<7&&i<recordTimes.size(); i++) {
-                recordTime record = recordTimes.get(i);
-                values.add(new Entry(i+1, (long)record.getTimeLength()/1000));
+            for (; values.size()<=7&&i<recordTimes.size(); i++) {
+                RecordTime record = recordTimes.get(i);
+                values.add(new Entry(i+1, Long.parseLong(record.getTime_length())/1000));
             }
             for (; i<7; i++) {
                 values.add(new Entry(i+1, 0));

@@ -72,7 +72,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="292dp"
-        android:drawableTop="@drawable/medal_icon_shine"
+        android:drawableTop="@drawable/medal_icon_grey"
         android:enabled="true"
         android:text="@string/action_medal_type1"
         app:layout_constraintEnd_toEndOf="parent"

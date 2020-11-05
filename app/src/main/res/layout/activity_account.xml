@@ -219,18 +219,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/getinf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_marginBottom="15dp"
-        android:text="getinf"
-        app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.769"
-        app:layout_constraintStart_toEndOf="@+id/getlocation"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
 
     <EditText
         android:id="@+id/getlocation"
@@ -238,12 +226,12 @@
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="120dp"
         android:layout_marginBottom="14dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toStartOf="@+id/getinf"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editTextPhone2"
         app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
 

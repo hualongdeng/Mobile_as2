@@ -48,7 +48,6 @@ public class PasswordActivity extends AppCompatActivity {
     private String phone_me;
     private String inputNewpw;
 
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
@@ -73,13 +72,12 @@ public class PasswordActivity extends AppCompatActivity {
     }
 
     private void initinf() {
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        Toast.makeText(getApplicationContext(), "sent request", Toast.LENGTH_SHORT).show();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Toast.makeText(getApplicationContext(), "onResponse", Toast.LENGTH_SHORT).show();
                         try {
                             avatar_me = response.getJSONObject(0).getString("avatar");
                             birthday_me = response.getJSONObject(0).getString("birthday");
@@ -111,7 +109,6 @@ public class PasswordActivity extends AppCompatActivity {
         final EditText newPwtext = (EditText) findViewById(R.id.newpw);
         final EditText confirmPwtext = (EditText) findViewById(R.id.comfpw);
         String inputOldpw = oldPwtext.getText().toString();
-        Toast.makeText(getApplicationContext(), inputOldpw, Toast.LENGTH_SHORT).show();
         inputNewpw = newPwtext.getText().toString();
         String inputConfpw = confirmPwtext.getText().toString();
 
