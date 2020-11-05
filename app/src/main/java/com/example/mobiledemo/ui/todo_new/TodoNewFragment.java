@@ -186,45 +186,44 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                     } else {
                         url = update_url;
                     }
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.d("TAG", response);
-                                String start_date = getActivity().getIntent().getStringExtra("date");
-                                Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                                intent.putExtra("date", start_date);
-                                startActivity(intent);
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("TAG", response);
+                            String start_date = getActivity().getIntent().getStringExtra("date");
+                            Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                            intent.putExtra("date", start_date);
+                            startActivity(intent);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("TAG", error.getMessage(), error);
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> map = new HashMap<String, String>();
+                            if (new_or_not == 1) {
+                                map.put("title", titleView.getText());
+                                map.put("email", email);
+                                map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                                map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                                map.put("location", placeView.getText());
+                                map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
+                                map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
+                            } else {
+                                map.put("id", String.valueOf(id));
+                                map.put("title", titleView.getText());
+                                map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                                map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                                map.put("location", placeView.getText());
+                                map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
+                                map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
                             }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("TAG", error.getMessage(), error);
-                            }
-                        }) {
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> map = new HashMap<String, String>();
-                                if (new_or_not == 1) {
-                                    map.put("title", titleView.getText());
-                                    map.put("email", email);
-                                    map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
-                                    map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
-                                    map.put("location", placeView.getText());
-                                    map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
-                                    map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
-                                } else {
-                                    map.put("id", String.valueOf(id));
-                                    map.put("title", titleView.getText());
-                                    map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
-                                    map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
-                                    map.put("location", placeView.getText());
-                                    map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
-                                    map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
-                                }
-
-                                return map;
-                            }
-                        };
+                            return map;
+                        }
+                    };
                     mQueue.add(stringRequest);
                     return true;
                 }
