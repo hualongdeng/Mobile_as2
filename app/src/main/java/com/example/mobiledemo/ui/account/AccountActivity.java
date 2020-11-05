@@ -3,25 +3,32 @@ package com.example.mobiledemo.ui.account;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import java.io.BufferedOutputStream;
-import android.provider.DocumentsContract;
-import android.database.Cursor;
 import java.io.FileOutputStream;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import androidx.annotation.NonNull;
-import android.content.ContentUris;
 import android.provider.MediaStore;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.login.LoginActivity;
+import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.password.PasswordActivity;
 import android.app.Dialog;
 import android.view.Gravity;
@@ -30,8 +37,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import android.Manifest;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.content.pm.PackageManager;
@@ -42,6 +52,12 @@ import java.io.IOException;
 import android.net.Uri;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.List;
+
 public class AccountActivity extends AppCompatActivity {
 
     private AccountViewModel accountViewModel;
@@ -56,6 +72,7 @@ public class AccountActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CHOOSE_PICTURE = 7;
     private File output;  // 设置拍照的图片文件
     private Uri photoUri;  // 拍摄照片的路径
+    String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +83,7 @@ public class AccountActivity extends AppCompatActivity {
         final Button logoutButton = findViewById(R.id.account_logout);
         uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
+        final Button getinfor = findViewById(R.id.getinf);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +106,7 @@ public class AccountActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                eText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                eText.setText(year+"-"+(monthOfYear + 1)+"-"+dayOfMonth);
                             }
                         }, year, month, day);
                 datepicker.show();
@@ -102,7 +120,7 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mimage = findViewById(R.id.myphoto);
+        mimage = findViewById(R.id.myPhoto);
         mimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,6 +135,14 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setDialog();
+            }
+        });
+
+        getinfor.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                initListData();
             }
         });
 
@@ -185,7 +211,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        mimage = findViewById(R.id.myphoto);
+        mimage = findViewById(R.id.myPhoto);
         Intent imagetakeintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         startActivityForResult(imagetakeintent, REQUEST_TAKE_PHOTO);
@@ -266,6 +292,54 @@ public class AccountActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initListData() {
+        final EditText phoneNumber =(EditText)findViewById(R.id.myPhonenumber);
+        final EditText myNickname =(EditText)findViewById(R.id.myNickname);
+        final EditText myBirthday =(EditText)findViewById(R.id.birthday);
+        final Spinner myGender = findViewById(R.id.spinner_gender);
+        RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
+        Toast.makeText(getApplicationContext(), "sent request", Toast.LENGTH_SHORT).show();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123", null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Toast.makeText(getApplicationContext(), "onResponse", Toast.LENGTH_SHORT).show();
+                        try {
+                            String ddd = response.getJSONObject(0).toString();
+                            Toast.makeText(getApplicationContext(), ddd, Toast.LENGTH_SHORT).show();
+                            int i=0;
+                            //int id = response.getJSONObject(0).getInt("id");
+                            //Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
+                            String birthday = response.getJSONObject(0).getString("birthday");
+                            myBirthday.setText(birthday);
+                            String nickname = response.getJSONObject(0).getString("nickname");
+                            myNickname.setText(nickname);
+                            String phone = response.getJSONObject(0).getString("phone");
+                            phoneNumber.setText(phone);
+                            Toast.makeText(getApplicationContext(), birthday, Toast.LENGTH_SHORT).show();
+                            String gender = response.getJSONObject(0).getString("gender");
+                            switch (gender){
+                                case "male":i=0;break;
+                                case "female":i=1;break;
+                                case "others":i=2;break;
+                                case "prefer not to say":i=3;break;
+                            }
+                            myGender.setSelection(i);
+                            // String place = response.getJSONObject(i).getString("location");
+                        } catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(), "catch exception", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(jsonArrayRequest);
+    }
 }
 
 
