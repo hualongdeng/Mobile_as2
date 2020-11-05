@@ -25,7 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/password"
@@ -42,7 +43,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/login"
@@ -104,5 +106,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:srcCompat="@drawable/ic_logo" />
+        app:srcCompat="@drawable/ic_logo"
+        android:contentDescription="TODO" />
 </androidx.constraintlayout.widget.ConstraintLayout>
