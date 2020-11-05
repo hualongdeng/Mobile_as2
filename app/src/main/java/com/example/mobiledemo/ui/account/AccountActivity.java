@@ -85,6 +85,7 @@ public class AccountActivity extends AppCompatActivity {
     private String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
     private String updateurl = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user_update";
     private int genderindex = 0;
+    Bitmap bitmap2;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -301,6 +302,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void choosePhoto() {
+        mimage = findViewById(R.id.myPhoto);
         // 选择相册操作
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -319,6 +321,7 @@ public class AccountActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         switch (requestCode) {
             // 拍摄照片的回调
             case REQUEST_TAKE_PHOTO:
@@ -336,13 +339,9 @@ public class AccountActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
                 }
                 // 把时间作为拍摄照片的保存路径;
-                output = new File(file, System.currentTimeMillis() + ".jpg");
-                String cx = output.toString();
-                Toast.makeText(getApplicationContext(), cx, Toast.LENGTH_SHORT).show();
-                if (file.exists()) {
-                    // 如果文件路径不存在则直接创建一个文件夹
-                    Toast.makeText(getApplicationContext(), "exist dir", Toast.LENGTH_SHORT).show();
-                }
+                output = new File(file, login_account+ "temp.jpg");
+//                String cx = output.toString();
+//                Toast.makeText(getApplicationContext(), cx, Toast.LENGTH_SHORT).show();
                 // 如果该照片已经存在就删除它,然后新创建一个
                 try {
                     if (output.exists()) {
@@ -363,6 +362,7 @@ public class AccountActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                avatar_me="9";
                 break;
             // 调用系统相册的回调
             case REQUEST_CHOOSE_PHOTO:
@@ -376,7 +376,7 @@ public class AccountActivity extends AppCompatActivity {
                     //Toast.makeText(this, "ContentResolver 完毕", Toast.LENGTH_SHORT).show();
                     try {
                         //获取图片
-                        Bitmap bitmap2 = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                        bitmap2 = BitmapFactory.decodeStream(cr.openInputStream(uri));
                         mimage.setImageBitmap(bitmap2);
                     } catch (FileNotFoundException e) {
                         Log.e("Exception", e.getMessage(), e);
@@ -385,6 +385,8 @@ public class AccountActivity extends AppCompatActivity {
                     //操作错误或没有选择图片
                     Log.i("MainActivtiy", "operation error");
                 }
+                avatar_me="10";
+//                Toast.makeText(this, "Change_success", Toast.LENGTH_SHORT).show();
                 //mCameraDialog.cancel();
                 break;
         }
@@ -469,6 +471,8 @@ public class AccountActivity extends AppCompatActivity {
                 gender_me = "prefer not to say";
                 break;
         }
+        if (avatar_me.equals("9") || (avatar_me.equals("10")) ){
+            savephoto(avatar_me);}
         RequestQueue updateQueue = Volley.newRequestQueue(this.getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, updateurl, new Response.Listener<String>() {
             @Override
@@ -505,15 +509,92 @@ public class AccountActivity extends AppCompatActivity {
         updateQueue.add(stringRequest);
     }
 
-    public void setphoto(String avatar) {
+    private void setphoto(String avatar) {
         ImageView mimage = findViewById(R.id.myPhoto);
-        String photoaddress = "avatar_icon_"+avatar;
-        int id=getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
-        //int id=getResources().getIdentifier("avatar_icon_2", "drawable", context.getPackageName());
-        Log.d("TAG-photo",Integer.toString(id));
-        mimage.setImageResource(id);
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        if (avatar.equals("9")){
+            File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            File filepath=new File(file, login_account+ "_final.jpg");
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath.toString());//从路径加载出图片bitmap
+            mimage.setImageBitmap(bitmap);//ImageView显示图片
+        }
+        else{
+            String photoaddress = "avatar_icon_"+avatar;
+            int id=getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
+            //int id=getResources().getIdentifier("avatar_icon_2", "drawable", context.getPackageName());
+            Log.d("TAG-photo",Integer.toString(id));
+            mimage.setImageResource(id);
+        }
         avatar_me=avatar;
     }
+
+    private void savephoto(String avatar) {
+//        Toast.makeText(this, "Begin save", Toast.LENGTH_SHORT).show();
+        String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        if (avatar.equals("9")){
+        Bitmap bitmap=mimage.getDrawingCache();
+        File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+        if (!file.exists()) {
+            // 如果文件路径不存在则直接创建一个文件夹
+            file.mkdirs();
+            Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
+        }
+        // 把时间作为拍摄照片的保存路径;
+        File output2 = new File(file, login_account+ "_final.jpg");
+        // 如果该照片已经存在就删除它,然后新创建一个
+        try {
+            if (output2.exists()) {
+                output2.delete();
+            }
+            output2.createNewFile();
+            Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "IO error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output2));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+            Log.e("Tag-save", "flush");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }}
+        if (avatar.equals("10")){
+            File file2 = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            if (!file2.exists()) {
+                // 如果文件路径不存在则直接创建一个文件夹
+                file2.mkdirs();
+                Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
+            }
+            // 把时间作为拍摄照片的保存路径;
+            File output2 = new File(file2, login_account+ "_final.jpg");
+            // 如果该照片已经存在就删除它,然后新创建一个
+            try {
+                if (output2.exists()) {
+                    output2.delete();
+                }
+                output2.createNewFile();
+                Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Toast.makeText(this, "IO error", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output2));
+                bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                bos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            avatar_me="9";
+        }
+
+    }
+
 }
 
 
