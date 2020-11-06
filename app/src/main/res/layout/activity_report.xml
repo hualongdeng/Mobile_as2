@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/chart_title"
-        android:text="Chart of Last 8 Use Records"
+        android:text="Chart of Last 7 Use Records"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
