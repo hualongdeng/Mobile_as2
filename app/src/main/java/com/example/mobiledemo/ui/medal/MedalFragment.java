@@ -172,14 +172,14 @@ public class MedalFragment extends Fragment {
 
                 Drawable top1 = getResources().getDrawable(R.drawable.medal_icon_shine);
                 Drawable top2 = getResources().getDrawable(R.drawable.medal_icon_grey);
-                if (time >60*60) {
+                if (time >= 60*60) {
                     type1Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type1Button.setEnabled(true);
                     type1_1Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type1_1Button.setEnabled(true);
                     type1Achieved = true;
                     type1_1Achieved = true;
-                } else if (time >10*60) {
+                } else if (time >= 10*60) {
                     type1Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type1Button.setEnabled(true);
                     type1_1Button.setCompoundDrawablesWithIntrinsicBounds(null, top2 , null, null);
@@ -195,14 +195,14 @@ public class MedalFragment extends Fragment {
                     type1_1Achieved = false;
                 }
 
-                if (frequency > 100) {
+                if (frequency >= 100) {
                     type2Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type2Button.setEnabled(true);
                     type2_1Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type2_1Button.setEnabled(true);
                     type2Achieved = true;
                     type2_1Achieved = true;
-                } else if (frequency > 10) {
+                } else if (frequency >= 10) {
                     type2Button.setCompoundDrawablesWithIntrinsicBounds(null, top1 , null, null);
 //            type2Button.setEnabled(true);
                     type2_1Button.setCompoundDrawablesWithIntrinsicBounds(null, top2 , null, null);

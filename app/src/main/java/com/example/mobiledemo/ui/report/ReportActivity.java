@@ -102,27 +102,39 @@ public class ReportActivity extends AppCompatActivity {
 
                 String type = getIntent().getStringExtra("type");
                 long sum = 0;
+                long hour = 0;
+                long minute = 0;
+                long second = 0;
                 if (type.equals("day")) {
                     for (RecordTime record :
                             recordTimeList) {
                         if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastDayTimestamp()/1000)
                             sum+=Long.parseLong(record.getTime_length())/1000;
                     }
-                    reportTv.setText("Today, you have used this app for " + sum + " seconds.");
+                    hour = (long)sum/3600;
+                    minute = (long)(sum-hour*3600)/60;
+                    second = sum-hour*3600-minute*60;
+                    reportTv.setText("Today, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
                 } else if (type.equals("week")) {
                     for (RecordTime record :
                             recordTimeList) {
                         if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastWeekTimestamp()/1000)
                             sum+=Long.parseLong(record.getTime_length())/1000;
                     }
-                    reportTv.setText("This week, you have used this app for " + sum + " seconds.");
+                    hour = (long)sum/3600;
+                    minute = (long)(sum-hour*3600)/60;
+                    second = sum-hour*3600-minute*60;
+                    reportTv.setText("This week, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
                 } else if (type.equals("month")) {
                     for (RecordTime record :
                             recordTimeList) {
                         if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastMonthTimestamp()/1000)
                             sum+=Long.parseLong(record.getTime_length())/1000;
                     }
-                    reportTv.setText("This month, you have used this app for " + sum + " seconds.");
+                    hour = (long)sum/3600;
+                    minute = (long)(sum-hour*3600)/60;
+                    second = sum-hour*3600-minute*60;
+                    reportTv.setText("This month, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
                 }
 
                 drawLineChart();
@@ -164,7 +176,7 @@ public class ReportActivity extends AppCompatActivity {
         //add data
         if (!recordTimes.isEmpty()) {
             int i=0;
-            for (; values.size()<=7&&i<recordTimes.size(); i++) {
+            for (; values.size()<7&&i<recordTimes.size(); i++) {
                 RecordTime record = recordTimes.get(i);
                 values.add(new Entry(i+1, Long.parseLong(record.getTime_length())/1000));
             }
