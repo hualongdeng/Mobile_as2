@@ -10,6 +10,7 @@ import com.example.mobiledemo.ui.login.LoginActivity;
 public class SplashActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGHT = 1800; // 1.80 second
 
+    //run the splash first and then display the login page
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +28,4 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//       super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash);
-
-//    }
 }
