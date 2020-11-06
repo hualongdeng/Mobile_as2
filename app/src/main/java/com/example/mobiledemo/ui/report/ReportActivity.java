@@ -74,8 +74,6 @@ public class ReportActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(ReportActivity.this, MainActivity.class);
-//                startActivity(intent);
                 onBackPressed();
             }
         });
@@ -91,12 +89,12 @@ public class ReportActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Log.d("TAG", response);
 
-                Gson gson = new Gson();//创建Gson对象
+                Gson gson = new Gson();//Create Gson object
                 JsonParser jsonParser = new JsonParser();
-                JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();//获取JsonArray对象
+                JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();//Get JsonArray object
                 ArrayList<RecordTime> beans = new ArrayList<>();
                 for (JsonElement bean : jsonElements) {
-                    RecordTime bean1 = gson.fromJson(bean, RecordTime.class);//解析
+                    RecordTime bean1 = gson.fromJson(bean, RecordTime.class);//Parsing
                     beans.add(bean1);
                 }
                 recordTimeList = beans;
@@ -233,7 +231,7 @@ public class ReportActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
     public void setDesc(){
-        lineChart.setDescription(null);//添加给LineChart
+        lineChart.setDescription(null);// Add to LineChart
     }
 
 

@@ -34,8 +34,8 @@ public class TimeUtils {
 
     public static long getLastWeekTimestamp() {
         Calendar calendar = Calendar.getInstance();
-        int min = calendar.getActualMinimum(Calendar.DAY_OF_WEEK); //获取周开始基准
-        int current = calendar.get(Calendar.DAY_OF_WEEK); //获取当天周内天数
+        int min = calendar.getActualMinimum(Calendar.DAY_OF_WEEK); //Get Start benchmark of the Week
+        int current = calendar.get(Calendar.DAY_OF_WEEK); //Get the number of days in the current week
         calendar.add(Calendar.DAY_OF_WEEK, min - current);
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                 0, 0, 0);
@@ -45,8 +45,8 @@ public class TimeUtils {
 
     public static long getLastMonthTimestamp() {
         Calendar calendar = Calendar.getInstance();
-        int min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH); //获取周开始基准
-        int current = calendar.get(Calendar.DAY_OF_MONTH); //获取当天周内天数
+        int min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH); //Get Start benchmark of the month
+        int current = calendar.get(Calendar.DAY_OF_MONTH); //Get the number of days in the current month
         calendar.add(Calendar.DAY_OF_MONTH, min - current);
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                 0, 0, 0);
