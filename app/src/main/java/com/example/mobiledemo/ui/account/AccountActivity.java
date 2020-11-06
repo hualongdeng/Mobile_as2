@@ -3,10 +3,15 @@ package com.example.mobiledemo.ui.account;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +30,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
@@ -42,23 +48,29 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import android.Manifest;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.content.pm.PackageManager;
+
 import androidx.core.app.ActivityCompat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import android.net.Uri;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +96,14 @@ public class AccountActivity extends AppCompatActivity {
     private String avatar_me = "1";
     private String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
     private String updateurl = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user_update";
+    private String locationurl = "https://maps.googleapis.com/maps/api/geocode/json?";
+    private String geo_location;
+    private String mapapi_key = "&key=AIzaSyBF2UDl9_r_TlLnjlYnGsufEbg6Xcd7oAs";
     private int genderindex = 0;
     Bitmap bitmap2;
+    private String city = "Unknown";
+    private String country = "Unknown";
+    private String real_location = "Unknown";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +115,10 @@ public class AccountActivity extends AppCompatActivity {
         uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
         final Button saveupdate = findViewById(R.id.savebutton);
+        final Button locationinf = findViewById(R.id.getlocainf);
+
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
-        Log.d("TAG-login_account",login_account);
+        Log.d("TAG-login_account", login_account);
         initListData();
         //String photoind = "1";
         //try { getIntent().getStringExtra("photoIndex");
@@ -108,6 +128,13 @@ public class AccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        locationinf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getlocation();
             }
         });
 
@@ -236,7 +263,7 @@ public class AccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setphoto("1");
                 photoDialog.hide();
-                }
+            }
         });
         root.findViewById(R.id.photoButton2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,7 +366,7 @@ public class AccountActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
                 }
                 // 把时间作为拍摄照片的保存路径;
-                output = new File(file, login_account+ "temp.jpg");
+                output = new File(file, login_account + "temp.jpg");
 //                String cx = output.toString();
 //                Toast.makeText(getApplicationContext(), cx, Toast.LENGTH_SHORT).show();
                 // 如果该照片已经存在就删除它,然后新创建一个
@@ -362,7 +389,7 @@ public class AccountActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                avatar_me="9";
+                avatar_me = "9";
                 break;
             // 调用系统相册的回调
             case REQUEST_CHOOSE_PHOTO:
@@ -385,7 +412,7 @@ public class AccountActivity extends AppCompatActivity {
                     //操作错误或没有选择图片
                     Log.i("MainActivtiy", "operation error");
                 }
-                avatar_me="10";
+                avatar_me = "10";
 //                Toast.makeText(this, "Change_success", Toast.LENGTH_SHORT).show();
                 //mCameraDialog.cancel();
                 break;
@@ -400,9 +427,9 @@ public class AccountActivity extends AppCompatActivity {
         final Spinner myGender = findViewById(R.id.spinner_gender);
         final EditText myLocation = (EditText) findViewById(R.id.getlocation);
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
-        Log.d("TAG-login_account",login_account);
+        Log.d("TAG-login_account", login_account);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url +login_account, null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -454,7 +481,7 @@ public class AccountActivity extends AppCompatActivity {
         mQueue.add(jsonArrayRequest);
     }
 
-    private void updateInf()  {
+    private void updateInf() {
         final Spinner myGender = findViewById(R.id.spinner_gender);
         genderindex = myGender.getSelectedItemPosition();
         switch (genderindex) {
@@ -471,8 +498,9 @@ public class AccountActivity extends AppCompatActivity {
                 gender_me = "prefer not to say";
                 break;
         }
-        if (avatar_me.equals("9") || (avatar_me.equals("10")) ){
-            savephoto(avatar_me);}
+        if (avatar_me.equals("9") || (avatar_me.equals("10"))) {
+            savephoto(avatar_me);
+        }
         RequestQueue updateQueue = Volley.newRequestQueue(this.getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, updateurl, new Response.Listener<String>() {
             @Override
@@ -513,56 +541,56 @@ public class AccountActivity extends AppCompatActivity {
     private void setphoto(String avatar) {
         ImageView mimage = findViewById(R.id.myPhoto);
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
-        if (avatar.equals("9")){
+        if (avatar.equals("9")) {
             File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
-            File filepath=new File(file, login_account+ "_final.jpg");
+            File filepath = new File(file, login_account + "_final.jpg");
             Bitmap bitmap = BitmapFactory.decodeFile(filepath.toString());//从路径加载出图片bitmap
             mimage.setImageBitmap(bitmap);//ImageView显示图片
-        }
-        else{
-            String photoaddress = "avatar_icon_"+avatar;
-            int id=getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
+        } else {
+            String photoaddress = "avatar_icon_" + avatar;
+            int id = getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
             //int id=getResources().getIdentifier("avatar_icon_2", "drawable", context.getPackageName());
-            Log.d("TAG-photo",Integer.toString(id));
+            Log.d("TAG-photo", Integer.toString(id));
             mimage.setImageResource(id);
         }
-        avatar_me=avatar;
+        avatar_me = avatar;
     }
 
     private void savephoto(String avatar) {
 //        Toast.makeText(this, "Begin save", Toast.LENGTH_SHORT).show();
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
-        if (avatar.equals("9")){
-        Bitmap bitmap=mimage.getDrawingCache();
-        File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
-        if (!file.exists()) {
-            // 如果文件路径不存在则直接创建一个文件夹
-            file.mkdirs();
-            Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
-        }
-        // 把时间作为拍摄照片的保存路径;
-        File output2 = new File(file, login_account+ "_final.jpg");
-        // 如果该照片已经存在就删除它,然后新创建一个
-        try {
-            if (output2.exists()) {
-                output2.delete();
+        if (avatar.equals("9")) {
+            Bitmap bitmap = mimage.getDrawingCache();
+            File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            if (!file.exists()) {
+                // 如果文件路径不存在则直接创建一个文件夹
+                file.mkdirs();
+                Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
             }
-            output2.createNewFile();
-            Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "IO error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            // 把时间作为拍摄照片的保存路径;
+            File output2 = new File(file, login_account + "_final.jpg");
+            // 如果该照片已经存在就删除它,然后新创建一个
+            try {
+                if (output2.exists()) {
+                    output2.delete();
+                }
+                output2.createNewFile();
+                Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Toast.makeText(this, "IO error", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output2));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                bos.close();
+                Log.e("Tag-save", "flush");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output2));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-            Log.e("Tag-save", "flush");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }}
-        if (avatar.equals("10")){
+        if (avatar.equals("10")) {
             File file2 = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
             if (!file2.exists()) {
                 // 如果文件路径不存在则直接创建一个文件夹
@@ -570,7 +598,7 @@ public class AccountActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
             }
             // 把时间作为拍摄照片的保存路径;
-            File output2 = new File(file2, login_account+ "_final.jpg");
+            File output2 = new File(file2, login_account + "_final.jpg");
             // 如果该照片已经存在就删除它,然后新创建一个
             try {
                 if (output2.exists()) {
@@ -591,12 +619,114 @@ public class AccountActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            avatar_me="9";
+            avatar_me = "9";
         }
 
     }
 
+    private void getlocation() {
+        getLocation(context);
+        final EditText myLocation = (EditText) findViewById(R.id.getlocation);
+        Log.e("TAG-locationurl", locationurl+geo_location+mapapi_key);
+        RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, locationurl+geo_location+mapapi_key, null,
+                 new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray APIresult = response.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
+                            int lenth = APIresult.length();
+                            Log.e("TAG-lenth", Integer.toString(lenth));
+                            for (int i = 0; i < lenth; i++) {
+                                Log.e("TAG-index", Integer.toString(i));
+                                JSONObject result_city = APIresult.getJSONObject(i);
+                                String types = result_city.getString("types");
+                                if (types.equals("[\"country\",\"political\"]")){
+                                    Log.e("TAG-result", "got it  ");
+                                    country = result_city.getString("short_name");
+                                    Log.e("TAG-country", country);
+                                }
+                                if (types.equals("[\"administrative_area_level_1\",\"political\"]")){
+                                    Log.e("TAG-result", "got it  ");
+                                    city = result_city.getString("long_name");
+                                    Log.e("TAG-city", city);
+                                }
+                            }
+                            real_location = city+", "+country;
+                            Log.e("TAG-real_location", real_location);
+                            myLocation.setText(real_location);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(jsonArrayRequest);
+    }
+
+    private void getLocation(Context context) {
+        LocationManager locationManager;
+        String locationProvider;
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        String test = locationManager.toString();
+        Log.e("TAG-test", test);
+        List<String> providers = locationManager.getProviders(true);
+        String output = providers.toString();
+        Log.e("TAG-output", output);
+        if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+            locationProvider = LocationManager.NETWORK_PROVIDER;
+            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
+        } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
+            locationProvider = LocationManager.GPS_PROVIDER;
+            Toast.makeText(this, "GPS_PROVIDER", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No Location Provider, Please check permission", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(locationProvider);
+        if (location!=null){
+            showLocation(location);
+        }else{
+            // 监视地理位置变化，第二个和第三个参数分别为更新的最短时间minTime和最短距离minDistace
+            locationManager.requestLocationUpdates(locationProvider, 0, 0,mListener);
+        }
+    }
+
+    private void showLocation(Location location){
+        String address = "Latitude："+location.getLatitude()+"  Longitude："+location.getLongitude();
+        Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
+        geo_location= "latlng="+location.getLatitude()+","+location.getLongitude();
+        //test location
+        //geo_location= "latlng="+"30"+","+"121";
+    }
+
+    LocationListener mListener = new LocationListener() {
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+        @Override
+        public void onLocationChanged(Location location) {
+            showLocation(location);
+        }};
+
 }
+
 
 
 
