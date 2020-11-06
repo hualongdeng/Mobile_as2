@@ -30,16 +30,16 @@
             android:id="@+id/chronometer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="180dp"
             android:gravity="center"
             android:textColor="#85C1E9"
-            android:textSize="60dip"
+            android:textSize="70dip"
             app:layout_constraintTop_toBottomOf="parent"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dip"
+            android:layout_height="80dp"
+            android:layout_margin="10dp"
             android:orientation="horizontal">
 
             <Button
@@ -47,8 +47,9 @@
                 android:layout_width="0dp"
                 android:layout_height="44dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/dashboard_start" />
 
             <Button
@@ -58,6 +59,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/dashboard_stop" />
 
             <Button
@@ -66,7 +68,8 @@
                 android:layout_height="44dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/dashboard_reset" />
         </LinearLayout>
 
