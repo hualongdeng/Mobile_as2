@@ -225,15 +225,13 @@
         android:id="@+id/getlocation"
         android:layout_width="134dp"
         android:layout_height="54dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="120dp"
         android:layout_marginBottom="14dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/account_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editTextPhone2"
+        app:layout_constraintStart_toEndOf="@+id/editTextPhone3"
         app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
