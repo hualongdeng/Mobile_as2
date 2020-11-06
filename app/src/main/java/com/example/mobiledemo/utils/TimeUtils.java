@@ -8,7 +8,7 @@ import java.util.Date;
 public class TimeUtils {
 
     public static long getCurrentLongTime() {
-        return System.currentTimeMillis()/1000;
+        return System.currentTimeMillis() / 1000;
     }
 
     public static String dateToStamp(String time) throws ParseException {
@@ -18,33 +18,40 @@ public class TimeUtils {
         return String.valueOf(ts);
     }
 
-    public static String stampToDate(long timeMillis){
+    public static String stampToDate(long timeMillis) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(timeMillis);
         return simpleDateFormat.format(date);
     }
 
     public static long getLastDayTimestamp() {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DATE, - 1);
-        Date d = c.getTime();
-        return d.getTime();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.set(calendar1.get(Calendar.YEAR), calendar1.get(Calendar.MONTH), calendar1.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        Date beginOfDate = calendar1.getTime();
+        return beginOfDate.getTime();
     }
 
     public static long getLastWeekTimestamp() {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DATE, - 7);
-        Date d = c.getTime();
-        return d.getTime();
+        Calendar calendar = Calendar.getInstance();
+        int min = calendar.getActualMinimum(Calendar.DAY_OF_WEEK); //获取周开始基准
+        int current = calendar.get(Calendar.DAY_OF_WEEK); //获取当天周内天数
+        calendar.add(Calendar.DAY_OF_WEEK, min - current);
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        Date beginOfDate = calendar.getTime();
+        return beginOfDate.getTime();
     }
 
     public static long getLastMonthTimestamp() {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.MONTH, - 1);
-        Date d = c.getTime();
-        return d.getTime();
+        Calendar calendar = Calendar.getInstance();
+        int min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH); //获取周开始基准
+        int current = calendar.get(Calendar.DAY_OF_MONTH); //获取当天周内天数
+        calendar.add(Calendar.DAY_OF_MONTH, min - current);
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        Date beginOfDate = calendar.getTime();
+        return beginOfDate.getTime();
     }
+
 }
