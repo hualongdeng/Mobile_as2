@@ -1,6 +1,7 @@
 package com.example.mobiledemo.ui.register;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,7 @@ import com.example.mobiledemo.ui.login.LoginActivity;
 import com.example.mobiledemo.ui.login.LoginViewModel;
 import com.example.mobiledemo.ui.login.LoginViewModelFactory;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +57,25 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText birthdayEditText = findViewById(R.id.register_birthday);
         final EditText phoneEditText = findViewById(R.id.register_phone);
         final CheckBox check = findViewById(R.id.register_checkBox);
+        birthdayEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText eText = (EditText) findViewById(R.id.register_birthday);
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                DatePickerDialog datepicker = new DatePickerDialog(RegisterActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                eText.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                            }
+                        }, year, month, day);
+                datepicker.show();
+            }
+        });
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
