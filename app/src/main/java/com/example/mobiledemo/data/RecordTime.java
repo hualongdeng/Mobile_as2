@@ -60,11 +60,11 @@ public class RecordTime implements Comparable<RecordTime>{
     @Override
     public int compareTo(RecordTime recordTime) {
         if(Long.parseLong(this.getStart_time())>Long.parseLong(recordTime.getStart_time())) {
-            return 1;
+            return -1;
         } else if (Long.parseLong(this.getStart_time())==Long.parseLong(recordTime.getStart_time())) {
             return 0;
         } else {
-            return -1;
+            return 1;
         }
     }
 }
