@@ -151,12 +151,12 @@ public class MedalFragment extends Fragment {
             public void onResponse(String response) {
                 Log.d("TAG", response);
 
-                Gson gson = new Gson();//创建Gson对象
+                Gson gson = new Gson();//Create Gson object
                 JsonParser jsonParser = new JsonParser();
-                JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();//获取JsonArray对象
+                JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();//Get JsonArray object
                 ArrayList<RecordTime> beans = new ArrayList<>();
                 for (JsonElement bean : jsonElements) {
-                    RecordTime bean1 = gson.fromJson(bean, RecordTime.class);//解析
+                    RecordTime bean1 = gson.fromJson(bean, RecordTime.class);//Parsing
                     beans.add(bean1);
                 }
 
