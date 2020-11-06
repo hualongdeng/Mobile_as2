@@ -32,6 +32,11 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.monitor_setting, rootKey);
         Preference monitor_button = findPreference("setting_application");
         SwitchPreference volume_monitor = findPreference("switch_volume");
+        if ((getActivity().getSharedPreferences("volume_monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
+            volume_monitor.setChecked(false);
+        } else {
+            volume_monitor.setChecked(true);
+        }
         volume_monitor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {

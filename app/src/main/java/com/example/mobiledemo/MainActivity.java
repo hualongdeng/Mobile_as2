@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
+        SharedPreferences volumeMonitorPref = getSharedPreferences("volume_monitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor volumeMonitorEditor = volumeMonitorPref.edit();
+        volumeMonitorEditor.putInt("volume_monitor", 0);
+        volumeMonitorEditor.putInt("volume_count", 0);
+        volumeMonitorEditor.commit();
+
         try {
             SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
         } catch (Exception e) {

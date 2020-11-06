@@ -10,7 +10,7 @@
 
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/register_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/register_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/register_username" />
 
 
     <EditText
@@ -57,10 +57,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/register_password" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/register_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -86,8 +86,8 @@
         android:text="I agree to have my data collected and stored according to the privacy statement"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/checkBox"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+        app:layout_constraintStart_toEndOf="@+id/register_checkBox"
+        app:layout_constraintTop_toBottomOf="@+id/register_phone"/>
 
     <Button
         android:id="@+id/register_register"
@@ -98,7 +98,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/register_submit"
-        android:enabled="false"
+        android:enabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +120,7 @@
         app:layout_constraintTop_toBottomOf="@id/register_register" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/register_checkBox"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
