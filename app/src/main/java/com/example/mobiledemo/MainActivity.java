@@ -379,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             if (locationManager == null) {
+                Log.e("TAG", "No locationManager");
                 return null;
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
