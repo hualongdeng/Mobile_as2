@@ -384,14 +384,14 @@ public class MainActivity extends AppCompatActivity {
         List<String> providers = locationManager.getProviders(true);
         String output = providers.toString();
         Log.e("TAG-output", output);
-        if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            locationProvider = LocationManager.NETWORK_PROVIDER;
-//            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
-            Log.e("BUG", "NETWORK_PROVIDER");
-        } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
+        if (providers.contains(LocationManager.GPS_PROVIDER)) {
             locationProvider = LocationManager.GPS_PROVIDER;
-//            Toast.makeText(this, "GPS_PROVIDER", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "GPS_PROVIDER");
+        } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+            locationProvider = LocationManager.NETWORK_PROVIDER;
+//            Toast.makeText(this, "GPS_PROVIDER", Toast.LENGTH_SHORT).show();
+            Log.e("BUG", "NETWORK_PROVIDER");
         } else {
 //            Toast.makeText(this, "No Location Provider, Please check permission", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "No Location Provider, Please check permission");
