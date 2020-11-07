@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         main_context = this;
 
+        if (getRecentTask(main_context) == null) {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        }
 //        try {
 //            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
 //        } catch (Exception e) {
@@ -116,11 +119,11 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         Calendar calendar = Calendar.getInstance();
                         int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH)+1;
+                        int month = calendar.get(Calendar.MONTH) + 1;
                         int day = calendar.get(Calendar.DAY_OF_MONTH);
                         int hour = calendar.get(Calendar.HOUR_OF_DAY);
                         int min = calendar.get(Calendar.MINUTE);
-                        String start_date = "&start_time=" + year+"-"+month+"-"+day;
+                        String start_date = "&start_time=" + year + "-" + month + "-" + day;
                         LocalDateTime now = LocalDateTime.of(year, month, day, hour, min);
                         initListData(start_date);
 
@@ -174,23 +177,23 @@ public class MainActivity extends AppCompatActivity {
     public static String getRecentTask(Context context) {
         String currentApp = null;
         try {
-                UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-                long time = System.currentTimeMillis();
-                List<UsageStats> appList = null;
-                if (usm != null) {
-                    appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> appList = null;
+            if (usm != null) {
+                appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            }
+            if (appList != null && !appList.isEmpty()) {
+                SortedMap<Long, UsageStats> sortedMap = new TreeMap<>();
+                for (UsageStats usageStats : appList) {
+                    sortedMap.put(usageStats.getLastTimeUsed(), usageStats);
                 }
-                if (appList != null && !appList.isEmpty()) {
-                    SortedMap<Long, UsageStats> sortedMap = new TreeMap<>();
-                    for (UsageStats usageStats : appList) {
-                        sortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-                    }
-                    if (!sortedMap.isEmpty()) {
-                        currentApp = sortedMap.get(sortedMap.lastKey()).getPackageName();
-                    }
+                if (!sortedMap.isEmpty()) {
+                    currentApp = sortedMap.get(sortedMap.lastKey()).getPackageName();
                 }
-                Log.e("ActivityTAG", "Application in foreground: " + currentApp);
-                return currentApp;
+            }
+            Log.e("ActivityTAG", "Application in foreground: " + currentApp);
+            return currentApp;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -216,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            for(int i=0; i<response.length(); i++){
-                                String [] start_time_draft = response.getJSONObject(i).getString("start_time").split("[-:T]");
+                            for (int i = 0; i < response.length(); i++) {
+                                String[] start_time_draft = response.getJSONObject(i).getString("start_time").split("[-:T]");
                                 int start_year = Integer.parseInt(start_time_draft[0]);
                                 int start_mon = Integer.parseInt(start_time_draft[1]);
                                 int start_day = Integer.parseInt(start_time_draft[2]);
@@ -228,12 +231,10 @@ public class MainActivity extends AppCompatActivity {
                                 if (remind == 1) {
                                     LocalDateTime new_start_time = start_time.minusMinutes(10);
                                     mDatas.add(new_start_time);
-                                }
-                                else if (remind == 2){
+                                } else if (remind == 2) {
                                     LocalDateTime new_start_time = start_time.minusMinutes(30);
                                     mDatas.add(new_start_time);
-                                }
-                                else {
+                                } else {
                                     mDatas.add(start_time);
                                 }
                             }
@@ -266,11 +267,11 @@ public class MainActivity extends AppCompatActivity {
                         Thread.sleep(1000);
                         SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
                         String json = preferences.getString("appListJson", null);
-                        if (json != null)
-                        {
+                        if (json != null) {
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<AppEntity>>(){}.getType();
-                            List<AppEntity> alterSamples = new ArrayList<AppEntity >();
+                            Type type = new TypeToken<List<AppEntity>>() {
+                            }.getType();
+                            List<AppEntity> alterSamples = new ArrayList<AppEntity>();
                             alterSamples = gson.fromJson(json, type);
                             for (int i = 0; i < alterSamples.size(); i++) {
                                 if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
@@ -322,8 +323,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("TAG", "分贝值:" + volume);
                         if (volume > 60) {
                             voice_count = voice_count + 1;
-                        }
-                        else {
+                        } else {
                             voice_count = 0;
                         }
                         if (voice_count >= 5) {
@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
             if (locationManager == null) {
                 return null;
             }
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  //从gps获取经纬度
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
         } catch (Exception e) {
