@@ -114,7 +114,7 @@ public class ReportActivity extends AppCompatActivity {
                     hour = (long)sum/3600;
                     minute = (long)(sum-hour*3600)/60;
                     second = sum-hour*3600-minute*60;
-                    reportTv.setText("Today, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
+                    reportTv.setText("Today, you have used this app for " + hour + (hour>1?" hours, ":" hour, ") + minute + (minute>1?" minutes, ":" minute, ") + second + (second>1?" seconds.":" second."));
                 } else if (type.equals("week")) {
                     for (RecordTime record :
                             recordTimeList) {
@@ -124,7 +124,7 @@ public class ReportActivity extends AppCompatActivity {
                     hour = (long)sum/3600;
                     minute = (long)(sum-hour*3600)/60;
                     second = sum-hour*3600-minute*60;
-                    reportTv.setText("This week, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
+                    reportTv.setText("This week, you have used this app for " + hour + (hour>1?" hours, ":" hour, ") + minute + (minute>1?" minutes, ":" minute, ") + second + (second>1?" seconds.":" second."));
                 } else if (type.equals("month")) {
                     for (RecordTime record :
                             recordTimeList) {
@@ -134,7 +134,7 @@ public class ReportActivity extends AppCompatActivity {
                     hour = (long)sum/3600;
                     minute = (long)(sum-hour*3600)/60;
                     second = sum-hour*3600-minute*60;
-                    reportTv.setText("This month, you have used this app for " + hour + (hour>1?" hours and ":" hour and ") + minute + (minute>1?" minutes and ":" minute and ") + second + (second>1?" seconds.":" second."));
+                    reportTv.setText("This month, you have used this app for " + hour + (hour>1?" hours, ":" hour, ") + minute + (minute>1?" minutes, ":" minute, ") + second + (second>1?" seconds.":" second."));
                 }
 
                 drawLineChart();
