@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
             AudioFormat.ENCODING_PCM_16BIT);
     Object mLock;
+    Context main_context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
+        main_context = this;
 
 //        try {
 //            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
@@ -259,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 while ((getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == 1) {
                     try {
-                        String currentapp = getRecentTask(getApplicationContext());
+                        String currentapp = getRecentTask(main_context);
                         Log.d("TAG", currentapp);
                         Thread.sleep(1000);
                         SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
