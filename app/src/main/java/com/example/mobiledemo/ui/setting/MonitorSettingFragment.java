@@ -27,11 +27,20 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.monitor_setting, rootKey);
         Preference monitor_button = findPreference("setting_application");
         SwitchPreference volume_monitor = findPreference("switch_volume");
+        SwitchPreference gps_monitor = findPreference("switch_gps");
+
         if ((getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == -1) {
             volume_monitor.setChecked(false);
         } else {
             volume_monitor.setChecked(true);
         }
+
+        if ((getActivity().getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == -1) {
+            gps_monitor.setChecked(false);
+        } else {
+            gps_monitor.setChecked(true);
+        }
+
         volume_monitor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -53,6 +62,29 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+        gps_monitor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean switched = ((SwitchPreference) preference).isChecked();
+                if (switched == false) {
+                    SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt("locationMonitor", 0);
+                    editor.commit();
+                    Log.e("123",String.valueOf(getActivity().getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)));
+                }
+                else {
+                    SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt("locationMonitor", -1);
+                    editor.commit();
+                    Log.e("123",String.valueOf(getActivity().getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)));
+                }
+                return true;
+            }
+        });
+
         if (monitor_button != null) {
             monitor_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

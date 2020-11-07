@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                         short[] buffer = new short[BUFFER_SIZE];
                         double volume = getVolume(buffer);
                         Log.e("TAG", "分贝值:" + volume);
-                        if (volume > 20) {
+                        if (volume > 60) {
                             voice_count = voice_count + 1;
                         }
                         else {
@@ -353,8 +353,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             thread.start();
-        }
-        else {
+        } else {
             makeToast("Voice monitor is unavailable, you enable it in settings");
         }
     }
@@ -382,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  //从gps获取经纬度
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                     //                                          int[] grantResults)
@@ -399,40 +398,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startLocMonitor() {
-        SharedPreferences sharedPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("locationMonitor", 1);
-        editor.commit();
-        Thread thread2 = new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                Location first_location = getLocation();
-                while ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1) {
-                    try {
-                        Thread.sleep(10000);
-                        Log.e("abd",getLocation().getLatitude() + "abd" + getLocation().getLongitude());
-                        if (getLocation().distanceTo(first_location) > 50) {
-                            int importance = NotificationManager.IMPORTANCE_HIGH;
-                            createNotificationChannel("alert", "location", importance);
-                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
-                                    .setContentTitle("You have moved!")
-                                    .setContentText("Please go back.")
-                                    .setWhen(System.currentTimeMillis())
-                                    .setSmallIcon(R.drawable.avatar_icon_1)
+        if ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 0) {
+            SharedPreferences sharedPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("locationMonitor", 1);
+            editor.commit();
+            Thread thread2 = new Thread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void run() {
+                    Location first_location = getLocation();
+                    while ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1) {
+                        try {
+                            Thread.sleep(10000);
+                            Log.e("abd", getLocation().getLatitude() + "abd" + getLocation().getLongitude());
+                            if (getLocation().distanceTo(first_location) > 50) {
+                                int importance = NotificationManager.IMPORTANCE_HIGH;
+                                createNotificationChannel("alert", "location", importance);
+                                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                        .setContentTitle("You have moved!")
+                                        .setContentText("Please go back.")
+                                        .setWhen(System.currentTimeMillis())
+                                        .setSmallIcon(R.drawable.avatar_icon_1)
 //                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                    .setAutoCancel(true)
-                                    .build();
-                            manager.notify(100, notification);
+                                        .setAutoCancel(true)
+                                        .build();
+                                manager.notify(100, notification);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        System.out.println(Thread.currentThread().getName());
                     }
-                    System.out.println(Thread.currentThread().getName());
                 }
-            }
-        });
-        thread2.start();
+            });
+            thread2.start();
+        } else {
+            makeToast("GPS monitor is unavailable, you enable it in settings");
+        }
     }
 }
