@@ -129,7 +129,7 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
             placeView.setText("Click to edit");
             remindView.setValueIndex(0);
             repeatView.setValueIndex(0);
-            email = getActivity().getIntent().getStringExtra("email");
+            email = getActivity().getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
             Calendar calendar = Calendar.getInstance();
             start_year = calendar.get(Calendar.YEAR);
             start_month = calendar.get(Calendar.MONTH)+1;

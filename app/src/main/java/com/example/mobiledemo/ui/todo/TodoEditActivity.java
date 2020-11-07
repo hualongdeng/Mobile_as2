@@ -44,7 +44,6 @@ public class TodoEditActivity extends AppCompatActivity {
     public View root;
     private MyAdapter mAdapter;
     private List<TodoEntity> mDatas;
-    String email = "123@123.com";
     String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -114,7 +113,6 @@ public class TodoEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TodoEditActivity.this, TodoNewActivity.class);
-                intent.putExtra("email", email);
                 intent.putExtra("date", start_date);
                 startActivity(intent);
             }

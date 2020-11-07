@@ -64,9 +64,7 @@ public class NotificationsFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_notifications, container, false);
         final Button todo_edit = root.findViewById(R.id.todo_edit);
         mRecyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
-        /*1,设置管理器*/
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        /*2,设置适配器*/
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1;

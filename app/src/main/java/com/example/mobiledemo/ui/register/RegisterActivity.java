@@ -1,10 +1,17 @@
 package com.example.mobiledemo.ui.register;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +27,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -37,15 +47,22 @@ import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.login.LoginActivity;
 import com.example.mobiledemo.ui.login.LoginViewModel;
 import com.example.mobiledemo.ui.login.LoginViewModelFactory;
+import com.example.mobiledemo.ui.setting.AppEntity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private RegisterViewModel registerViewModel;
     String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user";
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -57,6 +74,22 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText birthdayEditText = findViewById(R.id.register_birthday);
         final EditText phoneEditText = findViewById(R.id.register_phone);
         final CheckBox check = findViewById(R.id.register_checkBox);
+        Thread thread2 = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(10000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.e("TAG",getLocation().getLatitude() + "abd" + getLocation().getLongitude() );
+                }
+            }
+        });
+        thread2.start();
         birthdayEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (check.isChecked() == true){
+                if (check.isChecked() == true) {
                     RequestQueue mQueue = Volley.newRequestQueue(RegisterActivity.this);
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                         @Override
@@ -132,5 +165,29 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void RegisterFailed(String response) {
         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+    }
+
+    public Location getLocation() {
+        Location location = null;
+        try {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager == null) {
+                return null;
+            }
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  //从gps获取经纬度
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return null;
+                }
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        } catch (Exception e) {
+            Log.e("TAG", e.getMessage());
+        }
+        return location;
     }
 }

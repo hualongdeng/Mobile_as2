@@ -1,4 +1,4 @@
-package com.example.mobiledemo.ui.notifications;
+package com.example.mobiledemo.ui.home;
 
 import android.os.Build;
 import android.util.Log;
@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.notifications.TodoEntity;
 
 import java.util.List;
 

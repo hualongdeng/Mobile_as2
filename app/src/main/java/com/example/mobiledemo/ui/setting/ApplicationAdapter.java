@@ -91,58 +91,60 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     editor.putString("appListJson", json);
                     editor.commit();
 
-                    SharedPreferences sharedPref = activity_content.getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = sharedPref.edit();
-                    editor1.putInt("thread_killer", thread_id + 1);
-                    editor1.commit();
+                    if ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) != 0) {
 
-                    Log.d("TAG", String.valueOf(activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)));
-                    final int new_thread = activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = activity_content.getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor1 = sharedPref.edit();
+                        editor1.putInt("thread_killer", thread_id + 1);
+                        editor1.commit();
 
-                    Thread thread2 = new Thread(new Runnable() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        @Override
-                        public void run() {
-                            while ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == new_thread) {
-                                try {
-                                    String currentapp = getRecentTask(activity_content);
-                                    Thread.sleep(1000);
-                                    SharedPreferences preferences = activity_content.getSharedPreferences("appList", MODE_PRIVATE);
-                                    String json = preferences.getString("appListJson", null);
-                                    if (json != null)
-                                    {
-                                        Gson gson = new Gson();
-                                        Type type = new TypeToken<List<AppEntity>>(){}.getType();
-                                        List<AppEntity> alterSamples = new ArrayList<AppEntity >();
-                                        alterSamples = gson.fromJson(json, type);
-                                        for (int i = 0; i < alterSamples.size(); i++)
-                                        {
-                                            Log.d("TAG", currentapp);
-                                            if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
-                                                Log.d("TAG", alterSamples.get(i).getAppName());
-                                                int importance = NotificationManager.IMPORTANCE_HIGH;
-                                                createNotificationChannel("alert", "stop", importance);
-                                                NotificationManager manager = (NotificationManager) activity_content.getSystemService(NOTIFICATION_SERVICE);
-                                                Notification notification = new NotificationCompat.Builder(activity_content, "alert")
-                                                        .setContentTitle("You open the blocked application!")
-                                                        .setContentText("Please close it.")
-                                                        .setWhen(System.currentTimeMillis())
-                                                        .setSmallIcon(R.drawable.avatar_icon_1)
+                        Log.d("TAG", String.valueOf(activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)));
+                        final int new_thread = activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE);
+
+                        Thread thread2 = new Thread(new Runnable() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void run() {
+                                while ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == new_thread) {
+                                    try {
+                                        String currentapp = getRecentTask(activity_content);
+                                        Thread.sleep(1000);
+                                        SharedPreferences preferences = activity_content.getSharedPreferences("appList", MODE_PRIVATE);
+                                        String json = preferences.getString("appListJson", null);
+                                        if (json != null) {
+                                            Gson gson = new Gson();
+                                            Type type = new TypeToken<List<AppEntity>>() {
+                                            }.getType();
+                                            List<AppEntity> alterSamples = new ArrayList<AppEntity>();
+                                            alterSamples = gson.fromJson(json, type);
+                                            for (int i = 0; i < alterSamples.size(); i++) {
+                                                Log.d("TAG", currentapp);
+                                                if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
+                                                    Log.d("TAG", alterSamples.get(i).getAppName());
+                                                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                                                    createNotificationChannel("alert", "stop", importance);
+                                                    NotificationManager manager = (NotificationManager) activity_content.getSystemService(NOTIFICATION_SERVICE);
+                                                    Notification notification = new NotificationCompat.Builder(activity_content, "alert")
+                                                            .setContentTitle("You open the blocked application!")
+                                                            .setContentText("Please close it.")
+                                                            .setWhen(System.currentTimeMillis())
+                                                            .setSmallIcon(R.drawable.avatar_icon_1)
 //                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                                        .setAutoCancel(true)
-                                                        .build();
-                                                manager.notify(100, notification);
+                                                            .setAutoCancel(true)
+                                                            .build();
+                                                    manager.notify(100, notification);
+                                                }
                                             }
                                         }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    System.out.println(Thread.currentThread().getName());
                                 }
-                                System.out.println(Thread.currentThread().getName());
                             }
-                        }
-                    });
-                    thread2.start();
+                        });
+                        thread2.start();
+                    }
                     //选中状态 可以做一些操作
 
                 }else {
@@ -154,60 +156,58 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     editor.putString("appListJson", json);
                     editor.commit();
 
-                    SharedPreferences sharedPref = activity_content.getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = sharedPref.edit();
-                    editor1.putInt("thread_killer", thread_id + 1);
-                    editor1.commit();
+                    if ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) != 0) {
+                        SharedPreferences sharedPref = activity_content.getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor1 = sharedPref.edit();
+                        editor1.putInt("thread_killer", thread_id + 1);
+                        editor1.commit();
 
-                    final int new_thread = activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE);
+                        final int new_thread = activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE);
 
-                    Thread thread2 = new Thread(new Runnable() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        @Override
-                        public void run() {
-                            while ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == new_thread) {
-                                try {
-                                    String currentapp = getRecentTask(activity_content);
-                                    Thread.sleep(1000);
-                                    SharedPreferences preferences = activity_content.getSharedPreferences("appList", MODE_PRIVATE);
-                                    String json = preferences.getString("appListJson", null);
-                                    if (json != null)
-                                    {
-                                        Gson gson = new Gson();
-                                        Type type = new TypeToken<List<AppEntity>>(){}.getType();
-                                        List<AppEntity> alterSamples = new ArrayList<AppEntity >();
-                                        alterSamples = gson.fromJson(json, type);
-                                        for (int i = 0; i < alterSamples.size(); i++)
-                                        {
-                                            Log.d("TAG", currentapp);
-                                            if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
-                                                Log.d("TAG", alterSamples.get(i).getAppName());
-                                                int importance = NotificationManager.IMPORTANCE_HIGH;
-                                                createNotificationChannel("alert", "stop", importance);
-                                                NotificationManager manager = (NotificationManager) activity_content.getSystemService(NOTIFICATION_SERVICE);
-                                                Notification notification = new NotificationCompat.Builder(activity_content, "alert")
-                                                        .setContentTitle("You open the blocked application!")
-                                                        .setContentText("Please close it.")
-                                                        .setWhen(System.currentTimeMillis())
-                                                        .setSmallIcon(R.drawable.avatar_icon_1)
+                        Thread thread2 = new Thread(new Runnable() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void run() {
+                                while ((activity_content.getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == new_thread) {
+                                    try {
+                                        String currentapp = getRecentTask(activity_content);
+                                        Thread.sleep(1000);
+                                        SharedPreferences preferences = activity_content.getSharedPreferences("appList", MODE_PRIVATE);
+                                        String json = preferences.getString("appListJson", null);
+                                        if (json != null) {
+                                            Gson gson = new Gson();
+                                            Type type = new TypeToken<List<AppEntity>>() {
+                                            }.getType();
+                                            List<AppEntity> alterSamples = new ArrayList<AppEntity>();
+                                            alterSamples = gson.fromJson(json, type);
+                                            for (int i = 0; i < alterSamples.size(); i++) {
+                                                Log.d("TAG", currentapp);
+                                                if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
+                                                    Log.d("TAG", alterSamples.get(i).getAppName());
+                                                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                                                    createNotificationChannel("alert", "stop", importance);
+                                                    NotificationManager manager = (NotificationManager) activity_content.getSystemService(NOTIFICATION_SERVICE);
+                                                    Notification notification = new NotificationCompat.Builder(activity_content, "alert")
+                                                            .setContentTitle("You open the blocked application!")
+                                                            .setContentText("Please close it.")
+                                                            .setWhen(System.currentTimeMillis())
+                                                            .setSmallIcon(R.drawable.avatar_icon_1)
 //                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                                        .setAutoCancel(true)
-                                                        .build();
-                                                manager.notify(100, notification);
+                                                            .setAutoCancel(true)
+                                                            .build();
+                                                    manager.notify(100, notification);
+                                                }
                                             }
                                         }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    System.out.println(Thread.currentThread().getName());
                                 }
-                                System.out.println(Thread.currentThread().getName());
                             }
-                        }
-                    });
-                    thread2.start();
-
-                    //未选中状态 可以做一些操作
-
+                        });
+                        thread2.start();
+                    }
                 }
             }
         });

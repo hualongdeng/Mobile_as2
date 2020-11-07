@@ -1,5 +1,6 @@
 package com.example.mobiledemo;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,10 +11,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mobiledemo.ui.home.HomeFragment;
 import com.example.mobiledemo.ui.home.HomeTodoFragment;
 import com.example.mobiledemo.ui.notifications.NotificationsFragment;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
@@ -32,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,8 +61,15 @@ import java.util.TreeMap;
 public class MainActivity extends AppCompatActivity {
     int fragment = 0;
     private List<LocalDateTime> mDatas;
-    String email = "123@123.com";
     String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
+
+    AudioRecord mAudioRecorder;
+    static final int SAMPLE_RATE_IN_HZ = 8000;
+    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(
+            SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
+            AudioFormat.ENCODING_PCM_16BIT);
+    Object mLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,88 +78,48 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        SharedPreferences volumeMonitorPref = getSharedPreferences("volume_monitor", Context.MODE_PRIVATE);
+        SharedPreferences volumeMonitorPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
         SharedPreferences.Editor volumeMonitorEditor = volumeMonitorPref.edit();
         volumeMonitorEditor.putInt("volume_monitor", 0);
         volumeMonitorEditor.putInt("volume_count", 0);
         volumeMonitorEditor.commit();
 
-        try {
-            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            List<AppEntity> applist = new ArrayList<AppEntity>();
-            PackageManager packageManager = this.getPackageManager();
-            List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
-            for (int i = 0; i < packageInfoList.size(); i++) {
-                PackageInfo pak = (PackageInfo) packageInfoList.get(i);
-                if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
-                    applist.add(new AppEntity(pak.packageName, 1));
-                }
-            }
-            SharedPreferences.Editor editor = getSharedPreferences("appList", MODE_PRIVATE).edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(applist);
-            Log.d("TAG", "saved json is "+ json);
-            editor.putString("appListJson", json);
-            editor.commit();
-        }
+        SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("thread_killer", 0);
+        editor.commit();
+
+        SharedPreferences locationPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor locEditor = locationPref.edit();
+        locEditor.putInt("locationMonitor", 0);
+        locEditor.commit();
+
+//        try {
+//            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            List<AppEntity> applist = new ArrayList<AppEntity>();
+//            PackageManager packageManager = this.getPackageManager();
+//            List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
+//            for (int i = 0; i < packageInfoList.size(); i++) {
+//                PackageInfo pak = (PackageInfo) packageInfoList.get(i);
+//                if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
+//                    applist.add(new AppEntity(pak.packageName, 1));
+//                }
+//            }
+//            SharedPreferences.Editor editor = getSharedPreferences("appList", MODE_PRIVATE).edit();
+//            Gson gson = new Gson();
+//            String json = gson.toJson(applist);
+//            Log.d("TAG", "saved json is "+ json);
+//            editor.putString("appListJson", json);
+//            editor.commit();
+//        }
+
         try {
             fragment = getIntent().getIntExtra("fragment", 0);
             Log.d("TAG", String.valueOf(fragment));
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (fragment == 0) {
-            SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("thread_killer", 0);
-            editor.commit();
-            Thread thread2 = new Thread(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void run() {
-                    while ((getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == 0) {
-                        try {
-                            String currentapp = getRecentTask(getApplicationContext());
-                            Thread.sleep(1000);
-                            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
-                            String json = preferences.getString("appListJson", null);
-                            if (json != null)
-                            {
-                                Gson gson = new Gson();
-                                Type type = new TypeToken<List<AppEntity>>(){}.getType();
-                                List<AppEntity> alterSamples = new ArrayList<AppEntity >();
-                                alterSamples = gson.fromJson(json, type);
-                                for (int i = 0; i < alterSamples.size(); i++)
-                                {
-                                    Log.d("TAG", currentapp);
-                                    if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
-                                        Log.d("TAG", alterSamples.get(i).getAppName());
-                                        int importance = NotificationManager.IMPORTANCE_HIGH;
-                                        createNotificationChannel("alert", "stop", importance);
-                                        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                        Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
-                                                .setContentTitle("You open the blocked application!")
-                                                .setContentText("Please close it.")
-                                                .setWhen(System.currentTimeMillis())
-                                                .setSmallIcon(R.drawable.avatar_icon_1)
-//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                                .setAutoCancel(true)
-                                                .build();
-                                        manager.notify(100, notification);
-                                    }
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println(Thread.currentThread().getName());
-                    }
-                }
-            });
-            thread2.start();
         }
 
         Thread alarm_thread = new Thread(new Runnable() {
@@ -163,10 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         initListData(start_date);
 
                         Thread.sleep(1000);
-                        Log.d("SIZE", String.valueOf(mDatas.size()));
                         for (int i = 0; i < mDatas.size(); i++) {
-                            Log.d("TIME", now.toString());
-                            Log.d("TIME", mDatas.get(i).toString());
                             if (mDatas.get(i).toString().equals(now.toString())) {
                                 int importance = NotificationManager.IMPORTANCE_HIGH;
                                 createNotificationChannel("alert", "stop", importance);
@@ -206,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.text_home_container, new HomeTodoFragment())
+                    .replace(R.id.nav_host_fragment, new HomeFragment())
                     .commit();
         }
         DbUtils.createDb(this, "TimeRecord");
@@ -251,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
 //        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<LocalDateTime>(10);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "123@123.com" + start_date, null,
+        String login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account + start_date, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -277,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
                                     mDatas.add(start_time);
                                 }
                             }
-                            Log.d("TAG", mDatas.size() + "zxc");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -289,5 +262,193 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mQueue.add(jsonArrayRequest);
+    }
+
+    public void startAppMonitor() {
+        SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("thread_killer", 1);
+        editor.commit();
+        Thread thread2 = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                while ((getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == 1) {
+                    try {
+                        String currentapp = getRecentTask(getApplicationContext());
+                        Thread.sleep(1000);
+                        SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
+                        String json = preferences.getString("appListJson", null);
+                        if (json != null)
+                        {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<List<AppEntity>>(){}.getType();
+                            List<AppEntity> alterSamples = new ArrayList<AppEntity >();
+                            alterSamples = gson.fromJson(json, type);
+                            for (int i = 0; i < alterSamples.size(); i++)
+                            {
+                                Log.d("TAG", currentapp);
+                                if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
+                                    Log.d("TAG", alterSamples.get(i).getAppName());
+                                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                                    createNotificationChannel("alert", "stop", importance);
+                                    NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                    Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                            .setContentTitle("You open the blocked application!")
+                                            .setContentText("Please close it.")
+                                            .setWhen(System.currentTimeMillis())
+                                            .setSmallIcon(R.drawable.avatar_icon_1)
+//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                            .setAutoCancel(true)
+                                            .build();
+                                    manager.notify(100, notification);
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(Thread.currentThread().getName());
+                }
+            }
+        });
+        thread2.start();
+    }
+
+    public void startVoiceMonitor() {
+        if ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) != -1) {
+            SharedPreferences sharedPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("volume_monitor", 1);
+            editor.commit();
+            mLock = new Object();
+            Thread thread = new Thread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void run() {
+                    mAudioRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                            SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
+                            AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
+                    mAudioRecorder.startRecording();
+                    int voice_count = 0;
+                    while ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
+                        short[] buffer = new short[BUFFER_SIZE];
+                        double volume = getVolume(buffer);
+                        Log.e("TAG", "分贝值:" + volume);
+                        if (volume > 20) {
+                            voice_count = voice_count + 1;
+                        }
+                        else {
+                            voice_count = 0;
+                        }
+                        if (voice_count >= 5) {
+                            int importance = NotificationManager.IMPORTANCE_HIGH;
+                            createNotificationChannel("alert", "loud", importance);
+                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                    .setContentTitle("Your environment is to loud!")
+                                    .setContentText("Please make it quiet.")
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.avatar_icon_1)
+//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setAutoCancel(true)
+                                    .build();
+                            manager.notify(100, notification);
+                        }
+                        synchronized (mLock) {
+                            try {
+                                mLock.wait(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    mAudioRecorder.stop();
+                    mAudioRecorder.release();
+                    mAudioRecorder = null;
+                }
+            });
+            thread.start();
+        }
+        else {
+            makeToast("Voice monitor is unavailable, you enable it in settings");
+        }
+    }
+
+    private double getVolume(short[] buffer) {
+        int r = mAudioRecorder.read(buffer, 0, BUFFER_SIZE);
+        long v = 0;
+        for (int i = 0; i < buffer.length; i++) {
+            v += buffer[i] * buffer[i];
+        }
+        double mean = v / (double) r;
+        double volume = 10 * Math.log10(mean);
+        return volume;
+    }
+
+    private void makeToast(String response) {
+        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+    }
+
+    public Location getLocation() {
+        Location location = null;
+        try {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager == null) {
+                return null;
+            }
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  //从gps获取经纬度
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return null;
+                }
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        } catch (Exception e) {
+            Log.e("TAG", e.getMessage());
+        }
+        return location;
+    }
+
+    public void startLocMonitor() {
+        SharedPreferences sharedPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("locationMonitor", 1);
+        editor.commit();
+        Thread thread2 = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                Location first_location = getLocation();
+                while ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1) {
+                    try {
+                        Thread.sleep(10000);
+                        Log.e("abd",getLocation().getLatitude() + "abd" + getLocation().getLongitude());
+                        if (getLocation().distanceTo(first_location) > 50) {
+                            int importance = NotificationManager.IMPORTANCE_HIGH;
+                            createNotificationChannel("alert", "location", importance);
+                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                    .setContentTitle("You have moved!")
+                                    .setContentText("Please go back.")
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.avatar_icon_1)
+//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setAutoCancel(true)
+                                    .build();
+                            manager.notify(100, notification);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(Thread.currentThread().getName());
+                }
+            }
+        });
+        thread2.start();
     }
 }
