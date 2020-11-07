@@ -1,6 +1,14 @@
 package com.example.mobiledemo.ui.dashboard;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,10 +19,13 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.os.SystemClock;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,14 +37,26 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
+import com.example.mobiledemo.ui.setting.AppEntity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
 import com.example.mobiledemo.utils.DbUtils;
 import com.example.mobiledemo.utils.SPUtils;
 import com.example.mobiledemo.utils.TimeUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener, Chronometer.OnChronometerTickListener{
 
@@ -79,6 +102,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     chronometer.start();
                     isRunning = true;
                 }
+                ((MainActivity) getActivity()).startAppMonitor();
+                ((MainActivity) getActivity()).startVoiceMonitor();
+                ((MainActivity) getActivity()).startLocMonitor();
                 break;
             case R.id.btnStop:
                 if (isRunning) {
@@ -86,6 +112,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     chronometer.stop();
                     isRunning = false;
                 }
+                stopAppMonitor();
+                stopVoiceMonitor();
+                stopLocationMonitor();
                 break;
             case R.id.btnReset:
                 if (!isRunning) {
@@ -135,5 +164,60 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onChronometerTick(Chronometer chronometer) {
 //        String time = chronometer.getText().toString();
+    }
+
+    public static String getRecentTask(Context context) {
+        String currentApp = null;
+        try {
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> appList = null;
+            if (usm != null) {
+                appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            }
+            if (appList != null && !appList.isEmpty()) {
+                SortedMap<Long, UsageStats> sortedMap = new TreeMap<>();
+                for (UsageStats usageStats : appList) {
+                    sortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                }
+                if (!sortedMap.isEmpty()) {
+                    currentApp = sortedMap.get(sortedMap.lastKey()).getPackageName();
+                }
+            }
+            Log.e("ActivityTAG", "Application in foreground: " + currentApp);
+            return currentApp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(
+                NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    public void stopAppMonitor() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("thread_killer", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("thread_killer", 0);
+        editor.commit();
+    }
+
+    public void stopVoiceMonitor() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("monitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("volume_monitor", 0);
+        editor.commit();
+    }
+
+    public void stopLocationMonitor() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("locationMonitor", 0);
+        editor.commit();
     }
 }
