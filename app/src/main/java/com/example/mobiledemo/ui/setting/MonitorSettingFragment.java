@@ -27,7 +27,7 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.monitor_setting, rootKey);
         Preference monitor_button = findPreference("setting_application");
         SwitchPreference volume_monitor = findPreference("switch_volume");
-        if ((getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
+        if ((getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == -1) {
             volume_monitor.setChecked(false);
         } else {
             volume_monitor.setChecked(true);
@@ -41,12 +41,14 @@ public class MonitorSettingFragment extends PreferenceFragmentCompat {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt("volume_monitor", 0);
                     editor.commit();
+                    Log.e("123",String.valueOf(getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)));
                 }
                 else {
                     SharedPreferences sharedPref = getActivity().getSharedPreferences("monitor", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt("volume_monitor", -1);
                     editor.commit();
+                    Log.e("123",String.valueOf(getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)));
                 }
                 return true;
             }

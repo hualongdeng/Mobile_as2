@@ -61,6 +61,21 @@ public class LoginActivity extends AppCompatActivity {
         final Button registerButton = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
+        SharedPreferences volumeMonitorPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor volumeMonitorEditor = volumeMonitorPref.edit();
+        volumeMonitorEditor.putInt("volume_monitor", 0);
+        volumeMonitorEditor.commit();
+
+        SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("thread_killer", 0);
+        editor.commit();
+
+        SharedPreferences locationPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+        SharedPreferences.Editor locEditor = locationPref.edit();
+        locEditor.putInt("locationMonitor", 0);
+        locEditor.commit();
+
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {

@@ -78,22 +78,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        SharedPreferences volumeMonitorPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
-        SharedPreferences.Editor volumeMonitorEditor = volumeMonitorPref.edit();
-        volumeMonitorEditor.putInt("volume_monitor", 0);
-        volumeMonitorEditor.putInt("volume_count", 0);
-        volumeMonitorEditor.commit();
-
-        SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("thread_killer", 0);
-        editor.commit();
-
-        SharedPreferences locationPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
-        SharedPreferences.Editor locEditor = locationPref.edit();
-        locEditor.putInt("locationMonitor", 0);
-        locEditor.commit();
-
 //        try {
 //            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
 //        } catch (Exception e) {
@@ -316,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startVoiceMonitor() {
-        if ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) != -1) {
+        if ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 0) {
             SharedPreferences sharedPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("volume_monitor", 1);

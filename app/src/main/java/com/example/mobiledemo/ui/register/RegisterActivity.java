@@ -74,22 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText birthdayEditText = findViewById(R.id.register_birthday);
         final EditText phoneEditText = findViewById(R.id.register_phone);
         final CheckBox check = findViewById(R.id.register_checkBox);
-        Thread thread2 = new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(10000);
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Log.e("TAG",getLocation().getLatitude() + "abd" + getLocation().getLongitude() );
-                }
-            }
-        });
-        thread2.start();
         birthdayEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,27 +152,4 @@ public class RegisterActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
     }
 
-    public Location getLocation() {
-        Location location = null;
-        try {
-            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            if (locationManager == null) {
-                return null;
-            }
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  //从gps获取经纬度
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return null;
-                }
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-        } catch (Exception e) {
-            Log.e("TAG", e.getMessage());
-        }
-        return location;
-    }
 }
