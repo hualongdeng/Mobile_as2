@@ -376,23 +376,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Location getLocation() {
-        Location location = null;
-        try {
-            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            if (locationManager == null) {
-                Log.e("TAG", "No locationManager");
-                return null;
-            }
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Log.e("TAG", "yes gps.");
-            }
-            else {
-                Log.e("TAG", "No gps.");
-            }
-        } catch (Exception e) {
-            Log.e("TAG", e.getMessage());
+        LocationManager locationManager;
+        String locationProvider;
+        locationManager = (LocationManager) main_context.getSystemService(Context.LOCATION_SERVICE);
+        String test = locationManager.toString();
+        Log.e("TAG-test", test);
+        List<String> providers = locationManager.getProviders(true);
+        String output = providers.toString();
+        Log.e("TAG-output", output);
+        if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+            locationProvider = LocationManager.NETWORK_PROVIDER;
+//            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
+            Log.e("BUG", "NETWORK_PROVIDER");
+        } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
+            locationProvider = LocationManager.GPS_PROVIDER;
+//            Toast.makeText(this, "GPS_PROVIDER", Toast.LENGTH_SHORT).show();
+            Log.e("BUG", "GPS_PROVIDER");
+        } else {
+//            Toast.makeText(this, "No Location Provider, Please check permission", Toast.LENGTH_SHORT).show();
+            Log.e("BUG", "No Location Provider, Please check permission");
+            return null;
         }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
+        Location location = locationManager.getLastKnownLocation(locationProvider);
         return location;
     }
 
