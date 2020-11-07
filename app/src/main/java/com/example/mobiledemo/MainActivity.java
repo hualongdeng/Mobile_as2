@@ -328,13 +328,13 @@ public class MainActivity extends AppCompatActivity {
 //                        } else {
 //                            voice_count = 0;
 //                        }
-                        if (voice_count < 10) {
+                        if (voice_count < 15) {
                             voice_count = voice_count + 1;
                             voice_sum = voice_sum + volume;
                             Log.e("TAG", "分贝累计:" + voice_sum);
                         } else {
                             Log.e("TAG", "分贝累计:" + voice_sum);
-                            if ((voice_sum/10) > 50) {
+                            if ((voice_sum/15) > 50) {
                                 int importance = NotificationManager.IMPORTANCE_HIGH;
                                 createNotificationChannel("alert", "loud", importance);
                                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
