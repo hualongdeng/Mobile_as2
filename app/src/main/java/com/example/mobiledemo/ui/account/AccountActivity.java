@@ -6,24 +6,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
-
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.provider.MediaStore;
-
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProviders;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,10 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.MainActivity;
 import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.login.LoginActivity;
-import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.password.PasswordActivity;
-import com.example.mobiledemo.ui.todo.TodoEditActivity;
-
 import android.app.Dialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -47,35 +37,25 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import java.text.BreakIterator;
-import java.util.ArrayList;
 import java.util.Calendar;
-
 import android.Manifest;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.content.pm.PackageManager;
-
 import androidx.core.app.ActivityCompat;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import android.net.Uri;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -83,45 +63,42 @@ public class AccountActivity extends AppCompatActivity {
     private Button uploadButton;
     private ImageView mimage;
     Context context = this;
-    private static final int REQUEST_CAPTURE = 101;
-    private static final int REQUEST_TAKE_PHOTO = 1; // 拍照标识
-    private static final int REQUEST_CHOOSE_PHOTO = 2; // 选择相册标示符
-    // 获取拍照权限标识
+    private static final int REQUEST_TAKE_PHOTO = 1; // take photo identifier
+    private static final int REQUEST_CHOOSE_PHOTO = 2; // Select album identifier
+    // Obtain the photo permission ID
     private static final int PERMISSION_REQUEST_TAKE_PHONE = 6;
     private static final int PERMISSION_REQUEST_CHOOSE_PICTURE = 7;
-    private File output;  // 设置拍照的图片文件
-    private String oldpw_me;
-    private String gender_me;
-    private String email_me;
-    private String avatar_me = "1";
-    private String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
-    private String updateurl = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user_update";
-    private String locationurl = "https://maps.googleapis.com/maps/api/geocode/json?";
+    private File output;  // Set the picture file for taking pictures
+    private final String Url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";//Get user information url
+    private final String updateUrl = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user_update";//post user information url
+    private final String locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?";//google map url
+    private final String mapAPI_key = "&key=AIzaSyBF2UDl9_r_TlLnjlYnGsufEbg6Xcd7oAs";// google map API key
     private String geo_location;
-    private String mapapi_key = "&key=AIzaSyBF2UDl9_r_TlLnjlYnGsufEbg6Xcd7oAs";
-    private int genderindex = 0;
-    Bitmap bitmap2;
+    private int genderIndex = 0;
+    private Bitmap myBitmap;
     private String city = "Unknown";
     private String country = "Unknown";
     private String real_location = "Unknown";
+    private String oldpw_me;
+    private String gender_me;
+    private String email_me;
+    private String avatar_me = "1"; //default
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-//        accountViewModel = ViewModelProviders.of(this).get(AccountViewModel.class);
         final Button backButton = findViewById(R.id.account_back);
         final Button passwordButton = findViewById(R.id.account_password);
         final Button logoutButton = findViewById(R.id.account_logout);
-        uploadButton = findViewById(R.id.account_upload);
         final EditText birthdayText = findViewById(R.id.birthday);
         final Button saveupdate = findViewById(R.id.savebutton);
         final Button locationinf = findViewById(R.id.getlocainf);
+        mimage = findViewById(R.id.myPhoto);
+        uploadButton = findViewById(R.id.account_upload);
 
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         Log.d("TAG-login_account", login_account);
         initListData();
-        //String photoind = "1";
-        //try { getIntent().getStringExtra("photoIndex");
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +111,7 @@ public class AccountActivity extends AppCompatActivity {
         locationinf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getlocation();
+                getGeoLocation();
             }
         });
 
@@ -165,13 +142,11 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mimage = findViewById(R.id.myPhoto);
+
         mimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setcentralDialog();
-//                Intent intent = new Intent(AccountActivity.this, ProfilePhotoActivity.class);
-//                startActivity(intent);
             }
 
         });
@@ -190,14 +165,6 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
-//        getinfor.setOnClickListener(new View.OnClickListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.O)
-//            @Override
-//            public void onClick(View v) {
-//                initListData();
-//            }
-//        });
-
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,7 +178,6 @@ public class AccountActivity extends AppCompatActivity {
     public void setbottomDialog() {
         final Dialog mCameraDialog = new Dialog(this, R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.bottom_dialog, null);
-        //初始化视图
         root.findViewById(R.id.btn_choose_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,23 +207,21 @@ public class AccountActivity extends AppCompatActivity {
         mCameraDialog.setContentView(root);
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
-        lp.x = 0; // 新位置X坐标
-        lp.y = 0; // 新位置Y坐标
-        lp.width = (int) getResources().getDisplayMetrics().widthPixels; // 宽度
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // Get the current parameter value of the dialog box
+        lp.x = 0; // X coordinate of new position
+        lp.y = 0; // Y coordinate of new position
+        lp.width = (int) getResources().getDisplayMetrics().widthPixels;
         root.measure(0, 0);
         lp.height = root.getMeasuredHeight();
 
-        lp.alpha = 9f; // 透明度
+        lp.alpha = 9f; // transparency
         dialogWindow.setAttributes(lp);
         mCameraDialog.show();
     }
 
-
     public void setcentralDialog() {
         final Dialog photoDialog = new Dialog(this, R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.central_dialog, null);
-        //初始化视图
         root.findViewById(R.id.photoButton1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -317,23 +281,22 @@ public class AccountActivity extends AppCompatActivity {
         photoDialog.setContentView(root);
         Window dialogWindow = photoDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
-        lp.width = (int) getResources().getDisplayMetrics().widthPixels; // 宽度
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.width = (int) getResources().getDisplayMetrics().widthPixels;
         root.measure(0, 0);
         lp.height = root.getMeasuredHeight();
-        lp.x = 0; // 新位置X坐标
-        lp.y = 600; // 新位置Y坐标
-        lp.alpha = 9f; // 透明度
+        lp.x = 0;
+        lp.y = 600;
+        lp.alpha = 9f;
         dialogWindow.setAttributes(lp);
         photoDialog.show();
     }
 
     private void choosePhoto() {
         mimage = findViewById(R.id.myPhoto);
-        // 选择相册操作
+        // Select album operation
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        //Toast.makeText(getApplicationContext(), "chose", Toast.LENGTH_SHORT).show();
         startActivityForResult(intent, REQUEST_CHOOSE_PHOTO);
 
     }
@@ -345,12 +308,11 @@ public class AccountActivity extends AppCompatActivity {
         startActivityForResult(imagetakeintent, REQUEST_TAKE_PHOTO);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         switch (requestCode) {
-            // 拍摄照片的回调
+            // Callback for taking photos
             case REQUEST_TAKE_PHOTO:
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -359,17 +321,15 @@ public class AccountActivity extends AppCompatActivity {
                 mimage.buildDrawingCache(true);
                 mimage.buildDrawingCache();
                 Bitmap bitmap = mimage.getDrawingCache();
-                File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+                File file = new File(context.getFilesDir().getAbsolutePath(), "ProfilePicture");
                 if (!file.exists()) {
-                    // 如果文件路径不存在则直接创建一个文件夹
+                    // If the file path does not exist, create a folder directly
                     file.mkdirs();
                     Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
                 }
-                // 把时间作为拍摄照片的保存路径;
+                // The temporary save path of the taken photos;
                 output = new File(file, login_account + "temp.jpg");
-//                String cx = output.toString();
-//                Toast.makeText(getApplicationContext(), cx, Toast.LENGTH_SHORT).show();
-                // 如果该照片已经存在就删除它,然后新创建一个
+                // If the photo already exists, delete it and create a new one
                 try {
                     if (output.exists()) {
                         output.delete();
@@ -385,36 +345,31 @@ public class AccountActivity extends AppCompatActivity {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                     bos.flush();
                     bos.close();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 avatar_me = "9";
                 break;
-            // 调用系统相册的回调
+
+            // Call the callback of the system album
             case REQUEST_CHOOSE_PHOTO:
                 Toast.makeText(this, "CHOOSE_PHOTO", Toast.LENGTH_SHORT).show();
                 if (resultCode == RESULT_OK) {
-                    //Toast.makeText(this, "进入验证", Toast.LENGTH_SHORT).show();
                     Uri uri = data.getData();
-                    //Toast.makeText(this, "uri 完毕", Toast.LENGTH_SHORT).show();
-                    //使用content的接口
+                    //Use content interface
                     ContentResolver cr = this.getContentResolver();
-                    //Toast.makeText(this, "ContentResolver 完毕", Toast.LENGTH_SHORT).show();
                     try {
-                        //获取图片
-                        bitmap2 = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                        mimage.setImageBitmap(bitmap2);
+                        //Get pictures
+                        myBitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                        mimage.setImageBitmap(myBitmap);
                     } catch (FileNotFoundException e) {
                         Log.e("Exception", e.getMessage(), e);
                     }
                 } else {
-                    //操作错误或没有选择图片
+                    //Operation error or no picture selected
                     Log.i("MainActivtiy", "operation error");
                 }
                 avatar_me = "10";
-//                Toast.makeText(this, "Change_success", Toast.LENGTH_SHORT).show();
-                //mCameraDialog.cancel();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -429,7 +384,7 @@ public class AccountActivity extends AppCompatActivity {
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         Log.d("TAG-login_account", login_account);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account, null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, Url + login_account, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -483,8 +438,8 @@ public class AccountActivity extends AppCompatActivity {
 
     private void updateInf() {
         final Spinner myGender = findViewById(R.id.spinner_gender);
-        genderindex = myGender.getSelectedItemPosition();
-        switch (genderindex) {
+        genderIndex = myGender.getSelectedItemPosition();
+        switch (genderIndex) {
             case 0:
                 gender_me = "male";
                 break;
@@ -502,7 +457,7 @@ public class AccountActivity extends AppCompatActivity {
             savephoto(avatar_me);
         }
         RequestQueue updateQueue = Volley.newRequestQueue(this.getApplicationContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, updateurl, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, updateUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("TAG-target", response);
@@ -542,14 +497,13 @@ public class AccountActivity extends AppCompatActivity {
         ImageView mimage = findViewById(R.id.myPhoto);
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         if (avatar.equals("9")) {
-            File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            File file = new File(context.getFilesDir().getAbsolutePath(), "ProfilePicture");
             File filepath = new File(file, login_account + "_final.jpg");
-            Bitmap bitmap = BitmapFactory.decodeFile(filepath.toString());//从路径加载出图片bitmap
-            mimage.setImageBitmap(bitmap);//ImageView显示图片
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath.toString());//Load the image bitmap from the path
+            mimage.setImageBitmap(bitmap);//ImageView displays pictures
         } else {
             String photoaddress = "avatar_icon_" + avatar;
             int id = getResources().getIdentifier(photoaddress, "drawable", context.getPackageName());
-            //int id=getResources().getIdentifier("avatar_icon_2", "drawable", context.getPackageName());
             Log.d("TAG-photo", Integer.toString(id));
             mimage.setImageResource(id);
         }
@@ -557,19 +511,16 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void savephoto(String avatar) {
-//        Toast.makeText(this, "Begin save", Toast.LENGTH_SHORT).show();
         String login_account = this.getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         if (avatar.equals("9")) {
             Bitmap bitmap = mimage.getDrawingCache();
-            File file = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            File file = new File(context.getFilesDir().getAbsolutePath(), "ProfilePicture");
             if (!file.exists()) {
-                // 如果文件路径不存在则直接创建一个文件夹
                 file.mkdirs();
                 Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
             }
-            // 把时间作为拍摄照片的保存路径;
             File output2 = new File(file, login_account + "_final.jpg");
-            // 如果该照片已经存在就删除它,然后新创建一个
+            // If the photo already exists, delete it and create a new one
             try {
                 if (output2.exists()) {
                     output2.delete();
@@ -591,15 +542,13 @@ public class AccountActivity extends AppCompatActivity {
             }
         }
         if (avatar.equals("10")) {
-            File file2 = new File(context.getFilesDir().getAbsolutePath(), "takePhoto");
+            // Select album photo as profile picture
+            File file2 = new File(context.getFilesDir().getAbsolutePath(), "ProfilePicture");
             if (!file2.exists()) {
-                // 如果文件路径不存在则直接创建一个文件夹
                 file2.mkdirs();
                 Toast.makeText(getApplicationContext(), "creat dir", Toast.LENGTH_SHORT).show();
             }
-            // 把时间作为拍摄照片的保存路径;
             File output2 = new File(file2, login_account + "_final.jpg");
-            // 如果该照片已经存在就删除它,然后新创建一个
             try {
                 if (output2.exists()) {
                     output2.delete();
@@ -612,7 +561,7 @@ public class AccountActivity extends AppCompatActivity {
             }
             try {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output2));
-                bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 bos.flush();
                 bos.close();
 
@@ -624,16 +573,34 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
-    private void getlocation() {
-        getLocation(context);
+    LocationListener mListener = new LocationListener() {
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+        @Override
+        public void onLocationChanged(Location location) {
+            showLocation(location);
+        }};
+
+    private void getGeoLocation() {
+        //Obtain latitude and longitude information through NETWORK provider or GPS provider
+        getLatLonLocation(context);
         final EditText myLocation = (EditText) findViewById(R.id.getlocation);
-        Log.e("TAG-locationurl", locationurl+geo_location+mapapi_key);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, locationurl+geo_location+mapapi_key, null,
+        //Transform longitude and latitude into location information through geocodingAPI.
+        //If the user is in mainland China, the information may be blocked
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, locationUrl +geo_location+ mapAPI_key, null,
                  new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            //Obtain the required location information from the returned json package
                             JSONArray APIresult = response.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
                             int lenth = APIresult.length();
                             Log.e("TAG-lenth", Integer.toString(lenth));
@@ -653,7 +620,6 @@ public class AccountActivity extends AppCompatActivity {
                                 }
                             }
                             real_location = city+", "+country;
-                            Log.e("TAG-real_location", real_location);
                             myLocation.setText(real_location);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -669,7 +635,7 @@ public class AccountActivity extends AppCompatActivity {
         mQueue.add(jsonArrayRequest);
     }
 
-    private void getLocation(Context context) {
+    private void getLatLonLocation(Context context) {
         LocationManager locationManager;
         String locationProvider;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -697,33 +663,18 @@ public class AccountActivity extends AppCompatActivity {
         if (location!=null){
             showLocation(location);
         }else{
-            // 监视地理位置变化，第二个和第三个参数分别为更新的最短时间minTime和最短距离minDistace
+            // To monitor changes in geographic location, the second and third parameters are the updated minimum time minTime and minimum distance minDistace respectively
             locationManager.requestLocationUpdates(locationProvider, 0, 0,mListener);
         }
     }
 
     private void showLocation(Location location){
-        String address = "Latitude："+location.getLatitude()+"  Longitude："+location.getLongitude();
-        Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
         geo_location= "latlng="+location.getLatitude()+","+location.getLongitude();
         //test location
         //geo_location= "latlng="+"30"+","+"121";
     }
 
-    LocationListener mListener = new LocationListener() {
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-        @Override
-        public void onLocationChanged(Location location) {
-            showLocation(location);
-        }};
+
 
 }
 
