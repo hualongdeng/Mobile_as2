@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 while ((getSharedPreferences("thread_killer", MODE_PRIVATE).getInt("thread_killer", Context.MODE_PRIVATE)) == 1) {
                     try {
                         String currentapp = getRecentTask(getApplicationContext());
+                        Log.d("TAG", currentapp);
                         Thread.sleep(1000);
                         SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
                         String json = preferences.getString("appListJson", null);
@@ -269,9 +270,7 @@ public class MainActivity extends AppCompatActivity {
                             Type type = new TypeToken<List<AppEntity>>(){}.getType();
                             List<AppEntity> alterSamples = new ArrayList<AppEntity >();
                             alterSamples = gson.fromJson(json, type);
-                            for (int i = 0; i < alterSamples.size(); i++)
-                            {
-                                Log.d("TAG", currentapp);
+                            for (int i = 0; i < alterSamples.size(); i++) {
                                 if (alterSamples.get(i).getAppName().equals(currentapp) & alterSamples.get(i).getAppBlocked() == 1 & !alterSamples.get(i).getAppName().equals("com.example.mobiledemo")) {
                                     Log.d("TAG", alterSamples.get(i).getAppName());
                                     int importance = NotificationManager.IMPORTANCE_HIGH;
