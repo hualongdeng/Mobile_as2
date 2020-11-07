@@ -386,6 +386,7 @@ public class MainActivity extends AppCompatActivity {
         Log.e("TAG-output", output);
         if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
             locationProvider = LocationManager.NETWORK_PROVIDER;
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, mLocationListener);
 //            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "NETWORK_PROVIDER");
         } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
@@ -420,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                     while ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1) {
                         try {
                             Thread.sleep(2000);
-//                            Log.e("abd", getLocation().getLatitude() + "abd" + getLocation().getLongitude());
+                            Log.e("abd", getLocation().getLatitude() + "abd" + getLocation().getLongitude());
                             Log.e("distance", String.valueOf(getLocation().distanceTo(first_location)));
                             if (getLocation().distanceTo(first_location) > 10) {
                                 int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -448,4 +449,32 @@ public class MainActivity extends AppCompatActivity {
             makeToast("GPS monitor is unavailable, you enable it in settings");
         }
     }
+
+    private static LocationListener mLocationListener = new LocationListener() {
+
+        // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d("TAG", "onStatusChanged");
+        }
+
+        // Provider被enable时触发此函数，比如GPS被打开
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d("TAG", "onProviderEnabled");
+
+        }
+
+        // Provider被disable时触发此函数，比如GPS被关闭
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d("TAG", "onProviderDisabled");
+
+        }
+
+        //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+        @Override
+        public void onLocationChanged(Location location) {
+        }
+    };
 }
