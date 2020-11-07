@@ -385,6 +385,9 @@ public class MainActivity extends AppCompatActivity {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
+            else {
+                Log.e("TAG", "No gps.");
+            }
         } catch (Exception e) {
             Log.e("TAG", e.getMessage());
         }
