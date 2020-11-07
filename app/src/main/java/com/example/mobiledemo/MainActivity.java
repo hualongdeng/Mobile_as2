@@ -318,29 +318,40 @@ public class MainActivity extends AppCompatActivity {
                             AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
                     mAudioRecorder.startRecording();
                     int voice_count = 0;
+                    double voice_sum = 0;
                     while ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
                         short[] buffer = new short[BUFFER_SIZE];
                         double volume = getVolume(buffer);
 //                        Log.e("TAG", "分贝值:" + volume);
-                        if (volume > 60) {
+//                        if (volume > 50) {
+//                            voice_count = voice_count + 1;
+//                        } else {
+//                            voice_count = 0;
+//                        }
+                        if (voice_count < 10) {
                             voice_count = voice_count + 1;
+                            voice_sum = voice_sum + volume;
+                            Log.e("TAG", "分贝累计:" + voice_sum);
                         } else {
+                            Log.e("TAG", "分贝累计:" + voice_sum);
+                            if ((voice_sum/10) > 50) {
+                                int importance = NotificationManager.IMPORTANCE_HIGH;
+                                createNotificationChannel("alert", "loud", importance);
+                                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                                        .setContentTitle("Your environment is to loud!")
+                                        .setContentText("Please make it quiet.")
+                                        .setWhen(System.currentTimeMillis())
+                                        .setSmallIcon(R.drawable.avatar_icon_1)
+//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                        .setAutoCancel(true)
+                                        .build();
+                                manager.notify(100, notification);
+                            }
+                            voice_sum = 0;
                             voice_count = 0;
                         }
-                        if (voice_count >= 20) {
-                            int importance = NotificationManager.IMPORTANCE_HIGH;
-                            createNotificationChannel("alert", "loud", importance);
-                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
-                                    .setContentTitle("Your environment is to loud!")
-                                    .setContentText("Please make it quiet.")
-                                    .setWhen(System.currentTimeMillis())
-                                    .setSmallIcon(R.drawable.avatar_icon_1)
-//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                    .setAutoCancel(true)
-                                    .build();
-                            manager.notify(100, notification);
-                        }
+
                         synchronized (mLock) {
                             try {
                                 mLock.wait(100);
