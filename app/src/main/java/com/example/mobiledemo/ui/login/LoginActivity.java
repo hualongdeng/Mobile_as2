@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -39,9 +41,13 @@ import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.register.RegisterActivity;
 import com.example.mobiledemo.ui.login.LoginViewModel;
 import com.example.mobiledemo.ui.login.LoginViewModelFactory;
+import com.example.mobiledemo.ui.setting.AppEntity;
 import com.example.mobiledemo.ui.todo.TodoEditActivity;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
@@ -75,6 +81,22 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor locEditor = locationPref.edit();
         locEditor.putInt("locationMonitor", 0);
         locEditor.commit();
+
+        List<AppEntity> applist = new ArrayList<AppEntity>();
+        PackageManager packageManager = this.getPackageManager();
+        List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
+        for (int i = 0; i < packageInfoList.size(); i++) {
+            PackageInfo pak = (PackageInfo) packageInfoList.get(i);
+            if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
+                applist.add(new AppEntity(pak.packageName, 1));
+            }
+        }
+        SharedPreferences.Editor appEditor = getSharedPreferences("appList", MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(applist);
+        Log.d("TAG", "saved json is "+ json);
+        appEditor.putString("appListJson", json);
+        appEditor.commit();
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
