@@ -3,12 +3,14 @@ package com.example.mobiledemo.ui.setting;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreference;
 
 import com.example.mobiledemo.R;
 
@@ -32,10 +34,18 @@ public class SettingFragment extends PreferenceFragmentCompat {
             });
         }
         am = (AudioManager)getActivity().getSystemService(AUDIO_SERVICE);
-        int maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM );
+        int maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
         volume_bar.setMax(maxVolume);
         int currentVolume = am.getStreamVolume(AudioManager.STREAM_SYSTEM);
         Log.i("init", String.valueOf(currentVolume));
         volume_bar.setValue(currentVolume);
+
+        volume_bar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                am.setStreamVolume(AudioManager.STREAM_SYSTEM, ((SeekBarPreference) preference).getValue(), 0);
+                return true;
+            }
+        });
     }
 }

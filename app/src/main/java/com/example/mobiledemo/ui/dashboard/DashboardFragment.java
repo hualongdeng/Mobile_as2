@@ -86,6 +86,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         btn_stop.setOnClickListener(this);
         btn_base.setOnClickListener(this);
 
+        if ((getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timer", Context.MODE_PRIVATE)) == 0) {
+        } else {
+            if ((getActivity().getSharedPreferences("timer", MODE_PRIVATE).getInt("timerOn", Context.MODE_PRIVATE)) == 1) {
+                chronometer.setBase(getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timer", Context.MODE_PRIVATE));
+                isRunning = true;
+                chronometer.start();
+            } else {
+                chronometer.setBase(getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timer", Context.MODE_PRIVATE) + SystemClock.elapsedRealtime() - getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timerPulse", Context.MODE_PRIVATE));
+                isRunning = false;
+            }
+        }
     }
 
     @Override
@@ -93,28 +104,43 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         switch (v.getId()){
             case R.id.btnStart:
                 if (!isRunning) {
-                    if (!start) {
-                        start = true;
+                    if ((getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timerPulse", Context.MODE_PRIVATE)) == 0) {
                         chronometer.setBase(SystemClock.elapsedRealtime());
+                        SharedPreferences timerPref = getActivity().getSharedPreferences("timer", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor timerEditor = timerPref.edit();
+                        timerEditor.putInt("timerOn", 1);
+                        timerEditor.putLong("timer", SystemClock.elapsedRealtime());
+                        timerEditor.commit();
                     } else {
-                        chronometer.setBase(chronometer.getBase() + SystemClock.elapsedRealtime() - lastPause);
+                        chronometer.setBase(getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timer", Context.MODE_PRIVATE) + SystemClock.elapsedRealtime() - getActivity().getSharedPreferences("timer", MODE_PRIVATE).getLong("timerPulse", Context.MODE_PRIVATE));
+                        SharedPreferences timerPref = getActivity().getSharedPreferences("timer", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor timerEditor = timerPref.edit();
+                        timerEditor.putInt("timerOn", 1);
+                        timerEditor.putLong("timer", chronometer.getBase());
+                        timerEditor.commit();
                     }
                     chronometer.start();
                     isRunning = true;
+                    ((MainActivity) getActivity()).startAppMonitor();
+                    ((MainActivity) getActivity()).startVoiceMonitor();
+                    ((MainActivity) getActivity()).startLocMonitor();
                 }
-                ((MainActivity) getActivity()).startAppMonitor();
-                ((MainActivity) getActivity()).startVoiceMonitor();
-                ((MainActivity) getActivity()).startLocMonitor();
                 break;
             case R.id.btnStop:
                 if (isRunning) {
                     lastPause = SystemClock.elapsedRealtime();
                     chronometer.stop();
                     isRunning = false;
+                    SharedPreferences timerPref = getActivity().getSharedPreferences("timer", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor timerEditor = timerPref.edit();
+                    timerEditor.putInt("timerOn", 0);
+                    timerEditor.putLong("timerPulse", SystemClock.elapsedRealtime());
+                    timerEditor.commit();
+                    stopAppMonitor();
+                    stopVoiceMonitor();
+                    stopLocationMonitor();
                 }
-                stopAppMonitor();
-                stopVoiceMonitor();
-                stopLocationMonitor();
+
                 break;
             case R.id.btnReset:
                 if (!isRunning) {
@@ -123,8 +149,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     final long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
 //                    record.setTimeLength(elapsedMillis);
 //                    DbUtils.insert(record);
-
-
                     RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, update_url, new Response.Listener<String>() {
                         @Override
@@ -143,12 +167,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                             map.put("user_id", SPUtils.getString(getContext(),"account"));
                             map.put("start_time", TimeUtils.getCurrentLongTime()+"");
                             map.put("time_length", elapsedMillis+"");
-
                             return map;
                         }
                     };
                     mQueue.add(stringRequest);
-
                     start = false;
                     chronometer.setBase(SystemClock.elapsedRealtime());
                 }

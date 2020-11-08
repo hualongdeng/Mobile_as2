@@ -1,6 +1,7 @@
 package com.example.mobiledemo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Chronometer;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,9 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mobiledemo.ui.home.HomeFragment;
-import com.example.mobiledemo.ui.home.HomeTodoFragment;
 import com.example.mobiledemo.ui.notifications.NotificationsFragment;
-import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.setting.AppEntity;
 import com.example.mobiledemo.utils.DbUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,6 +41,7 @@ import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavController;
@@ -63,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
     int fragment = 0;
     private List<LocalDateTime> mDatas;
     String url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
-
+    String login_account;
+    String start_date;
     AudioRecord mAudioRecorder;
     static final int SAMPLE_RATE_IN_HZ = 8000;
     static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(
@@ -71,89 +73,107 @@ public class MainActivity extends AppCompatActivity {
             AudioFormat.ENCODING_PCM_16BIT);
     Object mLock;
     Context main_context;
+    RequestQueue mQueue;
+    JsonArrayRequest jsonArrayRequest;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TAG", Settings.ACTION_USAGE_ACCESS_SETTINGS);
-//        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         main_context = this;
+        mDatas = new ArrayList<LocalDateTime>();
 
         if (getRecentTask(main_context) == null) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
-//        try {
-//            SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            List<AppEntity> applist = new ArrayList<AppEntity>();
-//            PackageManager packageManager = this.getPackageManager();
-//            List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
-//            for (int i = 0; i < packageInfoList.size(); i++) {
-//                PackageInfo pak = (PackageInfo) packageInfoList.get(i);
-//                if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
-//                    applist.add(new AppEntity(pak.packageName, 1));
-//                }
-//            }
-//            SharedPreferences.Editor editor = getSharedPreferences("appList", MODE_PRIVATE).edit();
-//            Gson gson = new Gson();
-//            String json = gson.toJson(applist);
-//            Log.d("TAG", "saved json is "+ json);
-//            editor.putString("appListJson", json);
-//            editor.commit();
-//        }
-
         try {
             fragment = getIntent().getIntExtra("fragment", 0);
             Log.d("TAG", String.valueOf(fragment));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Thread alarm_thread = new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH) + 1;
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int min = calendar.get(Calendar.MINUTE);
-                        String start_date = "&start_time=" + year + "-" + month + "-" + day;
-                        LocalDateTime now = LocalDateTime.of(year, month, day, hour, min);
-                        initListData(start_date);
-
-                        Thread.sleep(1000);
-                        for (int i = 0; i < mDatas.size(); i++) {
-                            if (mDatas.get(i).toString().equals(now.toString())) {
-                                int importance = NotificationManager.IMPORTANCE_HIGH;
-                                createNotificationChannel("alert", "stop", importance);
-                                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
-                                        .setContentTitle("It is time!")
-                                        .setContentText("Just do it.")
-                                        .setWhen(System.currentTimeMillis())
-                                        .setSmallIcon(R.drawable.avatar_icon_1)
-//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                        .setAutoCancel(true)
-                                        .build();
-                                manager.notify(100, notification);
+        final Calendar calendar = Calendar.getInstance();
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH) + 1;
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        start_date = "&start_time=" + year + "-" + month + "-" + day;
+        login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        mQueue = Volley.newRequestQueue(this);
+        jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account + start_date, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                String[] start_time_draft = response.getJSONObject(i).getString("start_time").split("[-:T]");
+                                int start_year = Integer.parseInt(start_time_draft[0]);
+                                int start_mon = Integer.parseInt(start_time_draft[1]);
+                                int start_day = Integer.parseInt(start_time_draft[2]);
+                                int start_hour = Integer.parseInt(start_time_draft[3]);
+                                int start_minute = Integer.parseInt(start_time_draft[4]);
+                                int remind = response.getJSONObject(i).getInt("remind");
+                                LocalDateTime start_time = LocalDateTime.of(start_year, start_mon, start_day, start_hour, start_minute);
+                                if (remind == 1) {
+                                    LocalDateTime new_start_time = start_time.minusMinutes(10);
+                                    mDatas.add(new_start_time);
+                                } else if (remind == 2) {
+                                    LocalDateTime new_start_time = start_time.minusMinutes(30);
+                                    mDatas.add(new_start_time);
+                                } else {
+                                    mDatas.add(start_time);
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
-                }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
             }
         });
-        alarm_thread.start();
 
+        createNotificationChannel("alert", "stop", NotificationManager.IMPORTANCE_HIGH);
+        final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        final Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
+                .setContentTitle("It is time!")
+                .setContentText("Just do it.")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.avatar_icon_1)
+                .setAutoCancel(true)
+                .build();
+        if ((getSharedPreferences("alarm", MODE_PRIVATE).getInt("alarm", Context.MODE_PRIVATE)) == 0) {
+            SharedPreferences alarmPref = getSharedPreferences("alarm", Context.MODE_PRIVATE);
+            SharedPreferences.Editor alarmEditor = alarmPref.edit();
+            alarmEditor.putInt("alarm", 1);
+            alarmEditor.commit();
+            Thread alarm_thread = new Thread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void run() {
+                    while ((getSharedPreferences("alarm", MODE_PRIVATE).getInt("alarm", Context.MODE_PRIVATE)) == 1) {
+                        try {
+                            Calendar calendar1 = Calendar.getInstance();
+                            LocalDateTime now = LocalDateTime.of(year, month, day, calendar1.get(Calendar.HOUR_OF_DAY), calendar1.get(Calendar.MINUTE));
+                            initListData();
+                            Thread.sleep(1000);
+                            for (int i = 0; i < mDatas.size(); i++) {
+                                if (mDatas.get(i).toString().equals(now.toString())) {
+                                    manager.notify(100, notification);
+                                }
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            alarm_thread.start();
+        }
         navView.setItemIconTintList(null);
         navView.setItemIconSize(200);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -210,45 +230,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initListData(String start_date) {
-//        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
-        mDatas = new ArrayList<LocalDateTime>(10);
-        RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
-        String login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account + start_date, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                String[] start_time_draft = response.getJSONObject(i).getString("start_time").split("[-:T]");
-                                int start_year = Integer.parseInt(start_time_draft[0]);
-                                int start_mon = Integer.parseInt(start_time_draft[1]);
-                                int start_day = Integer.parseInt(start_time_draft[2]);
-                                int start_hour = Integer.parseInt(start_time_draft[3]);
-                                int start_minute = Integer.parseInt(start_time_draft[4]);
-                                int remind = response.getJSONObject(i).getInt("remind");
-                                LocalDateTime start_time = LocalDateTime.of(start_year, start_mon, start_day, start_hour, start_minute);
-                                if (remind == 1) {
-                                    LocalDateTime new_start_time = start_time.minusMinutes(10);
-                                    mDatas.add(new_start_time);
-                                } else if (remind == 2) {
-                                    LocalDateTime new_start_time = start_time.minusMinutes(30);
-                                    mDatas.add(new_start_time);
-                                } else {
-                                    mDatas.add(start_time);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
-            }
-        });
+    private void initListData() {
+        mDatas.clear();
         mQueue.add(jsonArrayRequest);
     }
 
@@ -322,18 +305,10 @@ public class MainActivity extends AppCompatActivity {
                     while ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
                         short[] buffer = new short[BUFFER_SIZE];
                         double volume = getVolume(buffer);
-//                        Log.e("TAG", "分贝值:" + volume);
-//                        if (volume > 50) {
-//                            voice_count = voice_count + 1;
-//                        } else {
-//                            voice_count = 0;
-//                        }
                         if (voice_count < 15) {
                             voice_count = voice_count + 1;
                             voice_sum = voice_sum + volume;
-                            Log.e("TAG", "分贝累计:" + voice_sum);
                         } else {
-                            Log.e("TAG", "分贝累计:" + voice_sum);
                             if ((voice_sum/15) > 50) {
                                 int importance = NotificationManager.IMPORTANCE_HIGH;
                                 createNotificationChannel("alert", "loud", importance);
@@ -343,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
                                         .setContentText("Please make it quiet.")
                                         .setWhen(System.currentTimeMillis())
                                         .setSmallIcon(R.drawable.avatar_icon_1)
-//                                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                                         .setAutoCancel(true)
                                         .build();
                                 manager.notify(100, notification);
@@ -366,6 +340,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             thread.start();
+        } else if ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
+            makeToast("Monitor is running.");
         } else {
             makeToast("Voice monitor is unavailable, you enable it in settings");
         }
@@ -386,6 +362,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("MissingPermission")
     public Location getLocation() {
         LocationManager locationManager;
         String locationProvider;
@@ -398,14 +375,11 @@ public class MainActivity extends AppCompatActivity {
         if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
             locationProvider = LocationManager.NETWORK_PROVIDER;
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, mLocationListener);
-//            Toast.makeText(this, "NETWORK_PROVIDER", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "NETWORK_PROVIDER");
         } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
             locationProvider = LocationManager.GPS_PROVIDER;
-//            Toast.makeText(this, "GPS_PROVIDER", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "GPS_PROVIDER");
         } else {
-//            Toast.makeText(this, "No Location Provider, Please check permission", Toast.LENGTH_SHORT).show();
             Log.e("BUG", "No Location Provider, Please check permission");
             return null;
         }
@@ -431,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
                     Location first_location = getLocation();
                     while ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1) {
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(10000);
                             Log.e("abd", getLocation().getLatitude() + "abd" + getLocation().getLongitude());
                             Log.e("distance", String.valueOf(getLocation().distanceTo(first_location)));
                             if (getLocation().distanceTo(first_location) > 10) {
@@ -456,6 +430,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             thread2.start();
+        } else if ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 1){
+            makeToast("Monitor is running now.");
         } else {
             makeToast("GPS monitor is unavailable, you enable it in settings");
         }
@@ -463,29 +439,26 @@ public class MainActivity extends AppCompatActivity {
 
     private static LocationListener mLocationListener = new LocationListener() {
 
-        // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             Log.d("TAG", "onStatusChanged");
         }
 
-        // Provider被enable时触发此函数，比如GPS被打开
         @Override
         public void onProviderEnabled(String provider) {
             Log.d("TAG", "onProviderEnabled");
 
         }
 
-        // Provider被disable时触发此函数，比如GPS被关闭
         @Override
         public void onProviderDisabled(String provider) {
             Log.d("TAG", "onProviderDisabled");
 
         }
 
-        //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
         @Override
         public void onLocationChanged(Location location) {
         }
     };
+
 }

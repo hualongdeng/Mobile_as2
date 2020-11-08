@@ -9,8 +9,5 @@
             android:title="Volume"
             android:max="50"
             android:defaultValue="0" />
-        <SwitchPreference
-            android:key="switch_preference"
-            android:title="Vibrate"/>
     </PreferenceCategory>
 </PreferenceScreen>

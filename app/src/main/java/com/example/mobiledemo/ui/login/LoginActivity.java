@@ -82,6 +82,18 @@ public class LoginActivity extends AppCompatActivity {
         locEditor.putInt("locationMonitor", 0);
         locEditor.commit();
 
+        SharedPreferences timerPref = getSharedPreferences("timer", Context.MODE_PRIVATE);
+        SharedPreferences.Editor timerEditor = timerPref.edit();
+        timerEditor.putInt("timerOn", 0);
+        timerEditor.putLong("timer", 0);
+        timerEditor.putLong("timerPulse", 0);
+        timerEditor.commit();
+
+        SharedPreferences alarmPref = getSharedPreferences("alarm", Context.MODE_PRIVATE);
+        SharedPreferences.Editor alarmEditor = alarmPref.edit();
+        alarmEditor.putInt("alarm", 0);
+        alarmEditor.commit();
+
         List<AppEntity> applist = new ArrayList<AppEntity>();
         PackageManager packageManager = this.getPackageManager();
         List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
@@ -139,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("account", usernameEditText.getText().toString());
                             editor.commit();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("fragment", -1);
                             startActivity(intent);
                             setResult(Activity.RESULT_OK);
                             finish();
