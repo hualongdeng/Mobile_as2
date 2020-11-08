@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         }
         final Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH) + 1;
+        final int month = calendar.get(Calendar.MONTH) + 2;
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
         start_date = "&start_time=" + year + "-" + month + "-" + day;
         login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
