@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
                             Thread.sleep(10000);
                             Log.e("abd", getLocation().getLatitude() + "abd" + getLocation().getLongitude());
                             Log.e("distance", String.valueOf(getLocation().distanceTo(first_location)));
-                            if (getLocation().distanceTo(first_location) > 10) {
+                            if (getLocation().distanceTo(first_location) > 30) {
                                 int importance = NotificationManager.IMPORTANCE_HIGH;
                                 createNotificationChannel("alert", "location", importance);
                                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
