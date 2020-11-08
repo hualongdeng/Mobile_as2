@@ -67,15 +67,14 @@ public class NotificationsFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
+        int month = calendar.get(Calendar.MONTH)+2;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         start_date = "&start_time=" + year+"-"+month+"-"+day;
         initListData(start_date);
         CalendarView myCalendar = (CalendarView) root.findViewById(R.id.calendarview);
         CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener(){
             public void onSelectedDayChange(CalendarView view, int year, int month, int day){
-                month = month + 1;
-                start_date = "&start_time=" + year+"-"+month+"-"+day;
+                start_date = "&start_time=" + year+"-"+ (month+2) +"-"+day;
                 Log.d("NEW_DATE", start_date);
                 initListData(start_date);
                 mAdapter = new MyAdapter(mDatas);
@@ -86,9 +85,7 @@ public class NotificationsFragment extends Fragment {
         myCalendar.setOnDateChangeListener(myCalendarListener);
         mAdapter = new MyAdapter(mDatas);
         mRecyclerView.setAdapter(mAdapter);
-        /*3,添加item的添加和移除动画, 这里我们使用系统默认的动画*/
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        /*4,添加分割线，自定义分割线，分割线必须要自己定义，系统没有默认分割线*/
         mRecyclerView.addItemDecoration(new Decoration());
 
 

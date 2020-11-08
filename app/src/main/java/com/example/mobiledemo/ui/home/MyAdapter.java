@@ -53,22 +53,24 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(mDatas.size() <= 0){ //无数据的情况
-            return;
-        }
-        TextViewHolder textViewHolder = (TextViewHolder) holder;
-        textViewHolder.startTime.setText(mDatas.get(position).getStart_time());
-        Log.d("TAG", mDatas.get(position).getStart_time());
-        textViewHolder.endTime.setText(mDatas.get(position).getEnd_time());
-        textViewHolder.title.setText(mDatas.get(position).getTitle());
-        textViewHolder.startTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(onItemClickListener != null){
-                    onItemClickListener.OnItemClick(v, position);
+        if(mDatas.size() <= 0){
+            TextViewHolder textViewHolder = (TextViewHolder) holder;
+            textViewHolder.endTime.setText("No todo thing!");
+        } else {
+            TextViewHolder textViewHolder = (TextViewHolder) holder;
+            textViewHolder.startTime.setText(mDatas.get(position).getStart_time());
+            Log.d("TAG", mDatas.get(position).getStart_time());
+            textViewHolder.endTime.setText(mDatas.get(position).getEnd_time());
+            textViewHolder.title.setText(mDatas.get(position).getTitle());
+            textViewHolder.startTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.OnItemClick(v, position);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -83,6 +85,16 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class TextViewHolder extends RecyclerView.ViewHolder{
         private TextView startTime, endTime, title;
         public TextViewHolder(View itemView) {
+            super(itemView);
+            startTime = (TextView) itemView.findViewById(R.id.todo_start_time);
+            endTime = (TextView) itemView.findViewById(R.id.todo_end_time);
+            title = (TextView) itemView.findViewById(R.id.todo_title);
+        }
+    }
+
+    class NoTextViewHolder extends RecyclerView.ViewHolder{
+        private TextView startTime, endTime, title;
+        public NoTextViewHolder(View itemView) {
             super(itemView);
             startTime = (TextView) itemView.findViewById(R.id.todo_start_time);
             endTime = (TextView) itemView.findViewById(R.id.todo_end_time);

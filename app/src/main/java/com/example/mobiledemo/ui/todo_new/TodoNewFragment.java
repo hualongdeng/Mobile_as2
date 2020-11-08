@@ -218,8 +218,8 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                             } else {
                                 map.put("id", String.valueOf(id));
                                 map.put("title", titleView.getText());
-                                map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
-                                map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                                map.put("start_time", getTimeString(start_year, start_month +1, start_day, start_hour, start_min));
+                                map.put("end_time", getTimeString(end_year, end_month +1, end_day, end_hour, end_min));
                                 map.put("location", placeView.getText());
                                 map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
                                 map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));
@@ -246,11 +246,11 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             start_year = new_start_year;
-                            start_month = new_start_month + 1;
+                            start_month = new_start_month;
                             start_day = new_start_day;
                             start_hour = new_start_hour;
                             start_min = new_start_min;
-                            startTimeView.setSummary(getTimeString(start_year, start_month, start_day, start_hour, start_min));
+                            startTimeView.setSummary(getTimeString(start_year, start_month + 1, start_day, start_hour, start_min));
                             dialog.dismiss();
                         }
                     });
@@ -266,6 +266,10 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                     TimePicker timePicker = (TimePicker) dialogView1.findViewById(R.id.timePicker);
                     timePicker.setIs24HourView(true);
                     if (new_or_not == 0) {
+                        timePicker.setHour(start_hour);
+                        timePicker.setMinute(start_min);
+                        datepicker.updateDate(start_year, start_month - 1, start_day);
+                    } else {
                         timePicker.setHour(start_hour);
                         timePicker.setMinute(start_min);
                         datepicker.updateDate(start_year, start_month, start_day);
@@ -311,11 +315,11 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             end_year = new_end_year;
-                            end_month = new_end_month + 1;
+                            end_month = new_end_month;
                             end_day = new_end_day;
                             end_hour = new_end_hour;
                             end_min = new_end_min;
-                            endTimeView.setSummary(getTimeString(end_year, end_month, end_day, end_hour, end_min));
+                            endTimeView.setSummary(getTimeString(end_year, end_month + 1, end_day, end_hour, end_min));
                             dialog.dismiss();
                         }
                     });
@@ -333,7 +337,11 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                     if (new_or_not == 0) {
                         timePicker.setHour(end_hour);
                         timePicker.setMinute(end_min);
-                        datepicker.updateDate(end_year, end_month, end_day);
+                        datepicker.updateDate(end_year, end_month - 1, end_day);
+                    } else {
+                        timePicker.setHour(start_hour);
+                        timePicker.setMinute(start_min);
+                        datepicker.updateDate(start_year, start_month, start_day);
                     }
                     new_end_year = datepicker.getYear();
                     new_end_month = datepicker.getMonth();

@@ -60,17 +60,12 @@ public class TodoEditActivity extends AppCompatActivity {
         final Button addNewButton = findViewById(R.id.todo_add_new);
 
         final String start_date = getIntent().getStringExtra("date");
-        /*1,设置管理器*/
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        /*2,设置适配器*/
         initListData(start_date);
         mAdapter = new MyAdapter(mDatas);
         mRecyclerView.setAdapter(mAdapter);
-        /*3,添加item的添加和移除动画, 这里我们使用系统默认的动画*/
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        /*4,添加分割线，自定义分割线，分割线必须要自己定义，系统没有默认分割线*/
         mRecyclerView.addItemDecoration(new Decoration());
-        /*设置条目点击事件*/
         mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View v, int position) {
@@ -121,7 +116,6 @@ public class TodoEditActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initListData(String start_date) {
-//        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(this.getApplicationContext());
         String login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
