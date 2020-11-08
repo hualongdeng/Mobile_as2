@@ -173,6 +173,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     mQueue.add(stringRequest);
                     start = false;
                     chronometer.setBase(SystemClock.elapsedRealtime());
+                    SharedPreferences timerPref = getActivity().getSharedPreferences("timer", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor timerEditor = timerPref.edit();
+                    timerEditor.putInt("timerOn", 0);
+                    timerEditor.putLong("timer", 0);
+                    timerEditor.putLong("timerPulse", 0);
+                    timerEditor.commit();
                 }
                 break;
         }
@@ -230,16 +236,30 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public void stopVoiceMonitor() {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("monitor", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("volume_monitor", 0);
-        editor.commit();
+        if ((getActivity().getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == -1) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("monitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("volume_monitor", -1);
+            editor.commit();
+        } else {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("monitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("volume_monitor", 0);
+            editor.commit();
+        }
     }
 
     public void stopLocationMonitor() {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("locationMonitor", 0);
-        editor.commit();
+        if ((getActivity().getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == -1) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("locationMonitor", -1);
+            editor.commit();
+        } else {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("locationMonitor", 0);
+            editor.commit();
+        }
     }
 }
