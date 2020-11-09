@@ -25,12 +25,13 @@
         android:id="@+id/volume_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:layout_marginTop="380dp"
         android:text="Current Surrounding Volume (db): "
         android:textColor="#4f5b4f"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toTopOf="parent" />
 
 <!--    <TextView-->
