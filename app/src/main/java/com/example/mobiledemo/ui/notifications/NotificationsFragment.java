@@ -67,14 +67,14 @@ public class NotificationsFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+2;
+        int month = calendar.get(Calendar.MONTH)+1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         start_date = "&start_time=" + year+"-"+month+"-"+day;
         initListData(start_date);
         CalendarView myCalendar = (CalendarView) root.findViewById(R.id.calendarview);
         CalendarView.OnDateChangeListener myCalendarListener = new CalendarView.OnDateChangeListener(){
             public void onSelectedDayChange(CalendarView view, int year, int month, int day){
-                start_date = "&start_time=" + year+"-"+ (month+2) +"-"+day;
+                start_date = "&start_time=" + year+"-"+ (month+1) +"-"+day;
                 Log.d("NEW_DATE", start_date);
                 initListData(start_date);
                 mAdapter = new MyAdapter(mDatas);
