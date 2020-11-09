@@ -313,8 +313,7 @@ public class MainActivity extends AppCompatActivity {
                         double volume = getVolume(buffer);
                         Fragment fragment1 =  getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
                         if (fragment1 instanceof DashboardFragment) {
-                            ((DashboardFragment) fragment1).update(volume + "");
-//                            Log.e("123", "123456778899");
+                            ((DashboardFragment) fragment1).update((int) volume + "");
                         }
                         if (voice_count < 15) {
                             voice_count = voice_count + 1;
