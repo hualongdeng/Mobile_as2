@@ -29,7 +29,6 @@ import com.example.mobiledemo.R;
 import com.example.mobiledemo.ui.account.AccountActivity;
 import com.example.mobiledemo.ui.login.LoginActivity;
 import com.example.mobiledemo.ui.notifications.Decoration;
-import com.example.mobiledemo.ui.notifications.MyAdapter;
 import com.example.mobiledemo.ui.notifications.TodoEntity;
 import com.example.mobiledemo.ui.register.RegisterActivity;
 import com.example.mobiledemo.ui.setting.SettingActivity;

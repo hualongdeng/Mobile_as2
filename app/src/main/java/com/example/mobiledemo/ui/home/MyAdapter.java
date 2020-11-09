@@ -56,21 +56,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(mDatas.size() <= 0){
             TextViewHolder textViewHolder = (TextViewHolder) holder;
             textViewHolder.endTime.setText("No todo thing!");
-        } else {
-            TextViewHolder textViewHolder = (TextViewHolder) holder;
-            textViewHolder.startTime.setText(mDatas.get(position).getStart_time());
-            Log.d("TAG", mDatas.get(position).getStart_time());
-            textViewHolder.endTime.setText(mDatas.get(position).getEnd_time());
-            textViewHolder.title.setText(mDatas.get(position).getTitle());
-            textViewHolder.startTime.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.OnItemClick(v, position);
-                    }
-                }
-            });
+            return;
         }
+        TextViewHolder textViewHolder = (TextViewHolder) holder;
+        textViewHolder.startTime.setText(mDatas.get(position).getStart_time());
+//        Log.d("TAG", mDatas.get(position).getStart_time());
+        textViewHolder.endTime.setText(mDatas.get(position).getEnd_time());
+        textViewHolder.title.setText(mDatas.get(position).getTitle());
     }
 
     @Override

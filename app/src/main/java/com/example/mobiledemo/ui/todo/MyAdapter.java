@@ -1,10 +1,12 @@
 package com.example.mobiledemo.ui.todo;
 
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobiledemo.R;
@@ -47,9 +49,12 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mHolder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(mDatas.size() <= 0){ //无数据的情况
+        if(mDatas.size() <= 0){
+            TextViewHolder textViewHolder = (TextViewHolder) holder;
+            textViewHolder.endTime.setText("No todo thing!");
             return;
         }
         TextViewHolder textViewHolder = (TextViewHolder) holder;
