@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
+// To-do entity constructor
 public class TodoEntity implements Serializable {
     public int id;
     public LocalDateTime start_time;

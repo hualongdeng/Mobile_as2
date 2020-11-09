@@ -10,7 +10,6 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,7 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,13 +41,11 @@ import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -90,23 +86,28 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         main_context = this;
         mDatas = new ArrayList<LocalDateTime>();
-
+//      Judge if app get the usage data permission
         if (getRecentTask(main_context) == null) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
+
         try {
             fragment = getIntent().getIntExtra("fragment", 0);
             Log.d("TAG", String.valueOf(fragment));
         } catch (Exception e) {
             e.printStackTrace();
         }
+//      Get current date
         final Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH) + 1;
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        voiceShow = findViewById(R.id.voiceShow);
         start_date = "&start_time=" + year + "-" + month + "-" + day;
+        //      Get current user email
         login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
+        voiceShow = findViewById(R.id.voiceShow);
+
+        //      Create request queue and request
         mQueue = Volley.newRequestQueue(this);
         jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + login_account + start_date, null,
                 new Response.Listener<JSONArray>() {
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //      Create notification
         createNotificationChannel("alert", "stop", NotificationManager.IMPORTANCE_HIGH);
         final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         final Notification notification = new NotificationCompat.Builder(getApplicationContext(), "alert")
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(R.drawable.avatar_icon_1)
                 .setAutoCancel(true)
                 .build();
+        //      Create alarm thread for to-do
         if ((getSharedPreferences("alarm", MODE_PRIVATE).getInt("alarm", Context.MODE_PRIVATE)) == 0) {
             SharedPreferences alarmPref = getSharedPreferences("alarm", Context.MODE_PRIVATE);
             SharedPreferences.Editor alarmEditor = alarmPref.edit();
@@ -180,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             });
             alarm_thread.start();
         }
+
         navView.setItemIconTintList(null);
         navView.setItemIconSize(200);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -200,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
         DbUtils.createDb(this, "TimeRecord");
     }
-
+    //    Get recent app info.
     public static String getRecentTask(Context context) {
         String currentApp = null;
         try {
@@ -235,12 +239,13 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.createNotificationChannel(channel);
     }
 
+    //    Get to-do list today.
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initListData() {
         mDatas.clear();
         mQueue.add(jsonArrayRequest);
     }
-
+    //    The function for app monitor.
     public void startAppMonitor() {
         SharedPreferences sharedPref = getSharedPreferences("thread_killer", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -290,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         });
         thread2.start();
     }
-
+    //    The function for app monitor.
     public void startVoiceMonitor() {
         if ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 0) {
             SharedPreferences sharedPref = getSharedPreferences("monitor", Context.MODE_PRIVATE);
@@ -355,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             makeToast("Voice monitor is unavailable, you enable it in settings");
         }
     }
-
+    //Calculate noise db
     private double getVolume(short[] buffer) {
         int r = mAudioRecorder.read(buffer, 0, BUFFER_SIZE);
         long v = 0;
@@ -370,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
     private void makeToast(String response) {
         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
     }
-
+    //    Get location information.
     @SuppressLint("MissingPermission")
     public Location getLocation() {
         LocationManager locationManager;
@@ -400,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
         Location location = locationManager.getLastKnownLocation(locationProvider);
         return location;
     }
-
+    //    The function for location monitor.
     public void startLocMonitor() {
         if ((getSharedPreferences("locationMonitor", MODE_PRIVATE).getInt("locationMonitor", Context.MODE_PRIVATE)) == 0) {
             SharedPreferences sharedPref = getSharedPreferences("locationMonitor", Context.MODE_PRIVATE);

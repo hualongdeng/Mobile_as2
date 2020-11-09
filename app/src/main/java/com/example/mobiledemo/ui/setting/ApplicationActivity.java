@@ -35,10 +35,6 @@ public class ApplicationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_application_list);
         applicationViewModel = ViewModelProviders.of(this).get(ApplicationViewModel.class);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view_application_list);
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.todo_edit_container, new TodoEditFragment())
-//                .commit();
         final Button backButton = findViewById(R.id.application_list_back);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -56,7 +52,6 @@ public class ApplicationActivity extends AppCompatActivity {
         });
     }
     private void initListData() {
-//        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<AppEntity>();
         SharedPreferences preferences = getSharedPreferences("appList", MODE_PRIVATE);
         String json = preferences.getString("appListJson", null);
@@ -66,17 +61,5 @@ public class ApplicationActivity extends AppCompatActivity {
             }.getType();
             mDatas = gson.fromJson(json, type);
         }
-//        mDatas = new ArrayList<String>(10);
-//        PackageManager packageManager = this.getPackageManager();
-//        List<PackageInfo> packageInfoList = packageManager .getInstalledPackages(0);
-//        for (int i = 0; i < packageInfoList.size(); i++) {
-//            PackageInfo pak = (PackageInfo)packageInfoList.get(i);
-//            if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) {
-//                mDatas.add(pak.packageName);
-//            } else
-//            {
-//                //系统应用
-//            }
-//        }
     }
 }

@@ -52,10 +52,6 @@ public class TodoEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_edit);
         todoEditViewModel = ViewModelProviders.of(this).get(TodoEditViewModel.class);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view_todo_edit);
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.todo_edit_container, new TodoEditFragment())
-//                .commit();
         final Button backButton = findViewById(R.id.todo_edit_back);
         final Button addNewButton = findViewById(R.id.todo_add_new);
 
@@ -77,23 +73,6 @@ public class TodoEditActivity extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.putExtra("date", start_date);
                 startActivity(intent);
-//                Toast.makeText(TodoEditActivity.this, mDatas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-//                AlertDialog.Builder builder2 = new AlertDialog.Builder(TodoEditActivity.this);
-//                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                AlertDialog dialog2 = builder2.create();
-//                dialog2.setTitle("Do you want to cancel?");
-//                dialog2.show();
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {

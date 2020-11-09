@@ -11,31 +11,30 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceFragmentCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.mobiledemo.MainActivity;
-import com.example.mobiledemo.R;
-import com.example.mobiledemo.ui.account.AccountActivity;
-import com.example.mobiledemo.ui.login.LoginActivity;
-import com.example.mobiledemo.ui.notifications.Decoration;
-import com.example.mobiledemo.ui.notifications.TodoEntity;
-import com.example.mobiledemo.ui.register.RegisterActivity;
-import com.example.mobiledemo.ui.setting.SettingActivity;
-import com.example.mobiledemo.ui.todo_new.TodoNewFragment;
 
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
+import com.example.mobiledemo.R;
+import com.example.mobiledemo.data.RecordTime;
+import com.example.mobiledemo.ui.account.AccountActivity;
+
+import com.example.mobiledemo.ui.notifications.TodoEntity;
+
+import com.example.mobiledemo.ui.setting.SettingActivity;
+import com.example.mobiledemo.utils.TimeUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,9 +56,11 @@ public class HomeFragment extends Fragment {
     public View root;
     private MyAdapter mAdapter;
     private List<TodoEntity> mDatas;
+    private List<RecordTime> recordTimeList;
     String start_date;
     String todo_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/todo?email=";
     String user_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/user?email=";
+    String record_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/recordtime";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,6 +71,7 @@ public class HomeFragment extends Fragment {
         final Button accountButton = root.findViewById(R.id.account);
         final Button settingButton = root.findViewById(R.id.setting);
         TextView nicknameView = root.findViewById(R.id.text_home_name);
+        TextView hourView = root.findViewById(R.id.text_home_hour);
 
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,15 +95,16 @@ public class HomeFragment extends Fragment {
         int month = calendar.get(Calendar.MONTH)+1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         start_date = "&start_time=" + year+"-"+month+"-"+day;
-        initListData(start_date, nicknameView);
+        initListData(start_date, nicknameView, hourView);
         mAdapter = new MyAdapter(mDatas);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         return root;
     }
 
+//   Get the home page data: to-do, hour.
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initListData(String start_date, final TextView nicknameView) {
+    private void initListData(String start_date, final TextView nicknameView, final TextView hourView) {
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String login_account = getActivity().getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
@@ -165,5 +168,34 @@ public class HomeFragment extends Fragment {
             }
         });
         mQueue.add(jsonArrayRequest_nickname);
+        StringRequest hourRequest = new StringRequest(Request.Method.GET, record_url + "?user_id=" + login_account,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        JsonParser jsonParser = new JsonParser();
+                        JsonArray jsonElements = jsonParser.parse(response).getAsJsonArray();
+                        ArrayList<RecordTime> beans = new ArrayList<>();
+                        for (JsonElement bean : jsonElements) {
+                            RecordTime bean1 = gson.fromJson(bean, RecordTime.class);
+                            beans.add(bean1);
+                        }
+                        recordTimeList = beans;
+                        long sum = 0;
+                        long hour = 0;
+                        for (RecordTime record : recordTimeList) {
+                            if (Long.parseLong(record.getStart_time()) > TimeUtils.getLastDayTimestamp() / 1000)
+                                sum += Long.parseLong(record.getTime_length()) / 1000;
+                        }
+                        hour = (long) sum / 3600;
+                        hourView.setText("You have efficiently studied for " + hour + " hours !");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(hourRequest);
     }
 }

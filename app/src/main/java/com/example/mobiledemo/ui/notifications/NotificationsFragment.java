@@ -88,30 +88,6 @@ public class NotificationsFragment extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new Decoration());
 
-
-
-//        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-//            @Override
-//            public void OnItemClick(View v, int position) {
-//                Toast.makeText(getContext(), mDatas.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-//                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-//                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                AlertDialog dialog2 = builder2.create();
-//                dialog2.setTitle("Do you want to cancel?");
-//                dialog2.show();
-//            }
-//        });
         todo_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,10 +99,9 @@ public class NotificationsFragment extends Fragment {
         return root;
     }
 
-
+// Get the to-do data
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initListData(String start_date) {
-//        mDatas = new ArrayList<HotListDataBean>(); //测试无数据情况
         mDatas = new ArrayList<TodoEntity>(10);
         RequestQueue mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String login_account = getActivity().getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
@@ -160,7 +135,6 @@ public class NotificationsFragment extends Fragment {
                                 mDatas.add(dataBean);
                             }
                             mAdapter.notifyDataSetChanged();
-                            Log.d("TAG", mDatas.size() + "zxc");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

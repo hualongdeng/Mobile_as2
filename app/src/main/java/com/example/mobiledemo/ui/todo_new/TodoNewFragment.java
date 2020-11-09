@@ -219,9 +219,7 @@ public class TodoNewFragment extends PreferenceFragmentCompat {
                                 map.put("id", String.valueOf(id));
                                 map.put("title", titleView.getText());
                                 map.put("start_time", getTimeString(start_year, start_month, start_day, start_hour, start_min));
-                                Log.d("TAG", start_month + "zxc");
                                 map.put("end_time", getTimeString(end_year, end_month, end_day, end_hour, end_min));
-                                Log.d("TAG", end_month + "zxc");
                                 map.put("location", placeView.getText());
                                 map.put("remind", String.valueOf(remindView.findIndexOfValue(remindView.getValue())));
                                 map.put("repeat", String.valueOf(repeatView.findIndexOfValue(repeatView.getValue())));

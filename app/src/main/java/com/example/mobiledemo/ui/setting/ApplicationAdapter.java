@@ -44,7 +44,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        if(mDatas.size() <= 0){ //无数据情况处理
+        if(mDatas.size() <= 0){
             return NO_DATA;
         }
         return TEXT_VIEW;
@@ -68,7 +68,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(mDatas.size() <= 0){ //无数据的情况
+        if(mDatas.size() <= 0){
             return;
         }
         ApplicationAdapter.TextViewHolder textViewHolder = (ApplicationAdapter.TextViewHolder) holder;
@@ -145,7 +145,6 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         });
                         thread2.start();
                     }
-                    //选中状态 可以做一些操作
 
                 }else {
                     mDatas.get(position).setBlocked(0);
@@ -215,16 +214,13 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return mDatas.size()>0 ? mDatas.size() : 1; //这里在数据为空的情况下返回1，为了显示无数据的布局
+        return mDatas.size()>0 ? mDatas.size() : 1;
     }
 
     public void setOnItemClickListener(ApplicationAdapter.OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    /**
-     * 文字item的holder
-     */
     class TextViewHolder extends RecyclerView.ViewHolder{
 
         private TextView application_name;
@@ -236,9 +232,6 @@ public class ApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    /**
-     * 适配器的点击事件接口
-     */
     public interface OnItemClickListener{
         void OnItemClick(View v, int position);
     }

@@ -27,7 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if(mDatas.size() <= 0){ //无数据情况处理
+        if(mDatas.size() <= 0){
             return NO_DATA;
         }
         return TEXT_VIEW;
@@ -89,16 +89,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mDatas.size()>0 ? mDatas.size() : 1; //这里在数据为空的情况下返回1，为了显示无数据的布局
+        return mDatas.size()>0 ? mDatas.size() : 1;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    /**
-     * 文字item的holder
-     */
     class TextViewHolder extends RecyclerView.ViewHolder{
         private TextView startTime, endTime, title;
         public TextViewHolder(View itemView) {
@@ -108,10 +105,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             title = (TextView) itemView.findViewById(R.id.todo_title);
         }
     }
-
-    /**
-     * 适配器的点击事件接口
-     */
     public interface OnItemClickListener{
         void OnItemClick(View v, int position);
     }
