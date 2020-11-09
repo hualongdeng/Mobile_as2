@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Chronometer;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mobiledemo.ui.dashboard.DashboardFragment;
 import com.example.mobiledemo.ui.home.HomeFragment;
 import com.example.mobiledemo.ui.notifications.NotificationsFragment;
 import com.example.mobiledemo.ui.setting.AppEntity;
@@ -44,8 +46,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     Context main_context;
     RequestQueue mQueue;
     JsonArrayRequest jsonArrayRequest;
+    TextView voiceShow;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -97,8 +102,9 @@ public class MainActivity extends AppCompatActivity {
         }
         final Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH) + 2;
+        final int month = calendar.get(Calendar.MONTH) + 1;
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        voiceShow = findViewById(R.id.voiceShow);
         start_date = "&start_time=" + year + "-" + month + "-" + day;
         login_account = getSharedPreferences("account", MODE_PRIVATE).getString("account", "");
         mQueue = Volley.newRequestQueue(this);
@@ -305,6 +311,11 @@ public class MainActivity extends AppCompatActivity {
                     while ((getSharedPreferences("monitor", MODE_PRIVATE).getInt("volume_monitor", Context.MODE_PRIVATE)) == 1) {
                         short[] buffer = new short[BUFFER_SIZE];
                         double volume = getVolume(buffer);
+                        Fragment fragment1 =  getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
+                        if (fragment1 instanceof DashboardFragment) {
+                            ((DashboardFragment) fragment1).update(volume + "");
+//                            Log.e("123", "123456778899");
+                        }
                         if (voice_count < 15) {
                             voice_count = voice_count + 1;
                             voice_sum = voice_sum + volume;
@@ -325,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
                             voice_sum = 0;
                             voice_count = 0;
                         }
-
                         synchronized (mLock) {
                             try {
                                 mLock.wait(100);

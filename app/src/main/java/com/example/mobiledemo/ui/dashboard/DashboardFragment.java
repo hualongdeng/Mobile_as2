@@ -65,7 +65,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private long lastPause;
     private boolean start = false;
     private boolean isRunning = false;
-
+    public TextView voiceShow;
     private String update_url = "http://flask-env.eba-kdpr8bpk.us-east-1.elasticbeanstalk.com/recordtime_update";
 
     @Override
@@ -80,6 +80,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         btn_start = getActivity().findViewById(R.id.btnStart);
         btn_stop = getActivity().findViewById(R.id.btnStop);
         btn_base = getActivity().findViewById(R.id.btnReset);
+        voiceShow = getActivity().findViewById(R.id.voiceShow);
 
         chronometer.setOnChronometerTickListener(this);
         btn_start.setOnClickListener(this);
@@ -261,5 +262,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             editor.putInt("locationMonitor", 0);
             editor.commit();
         }
+    }
+
+    public void update(String s){
+        voiceShow.setText(s);
     }
 }

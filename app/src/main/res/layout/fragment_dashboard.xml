@@ -33,17 +33,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/volume_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="380dp"
-        android:text="00.00"
-        android:textColor="#4f5b4f"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/volume_text"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/volume_num"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginTop="380dp"-->
+<!--        android:text="00.00"-->
+<!--        android:textColor="#4f5b4f"-->
+<!--        android:textSize="16sp"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/volume_text"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -95,7 +95,17 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="36dp"
                 android:background="@drawable/dashboard_reset" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/voiceShow"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="36dp"
+            android:gravity="center"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
